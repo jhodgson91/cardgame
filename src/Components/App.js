@@ -1,17 +1,22 @@
 import React, { Component } from 'react';
-//THis doesn't appear to work at all
-import jquery from 'jquery';
-window.$ = window.jQuery = jquery;
-require('foundation-sites');
+import styles from './App.css';
+import $ from 'jquery';
+import 'foundation-sites';
+
 
 // This is what it could look like with less rubbish colours and designs: https://whip-waiter.glitch.me
 class App extends Component { 
+  
+  componentDidMount() {
+    $(document).foundation();
+  }
+  
   render() {
     return (
       <div className="grid-x">
         <header className="cell">
         
-          <section id="hero">
+          <section id="hero" className={styles['hero']}>
             <div className="grid-container">
               <div className="grid-x grid-padding-x align-center">
                 <div className="small-12">
