@@ -32,6 +32,9 @@ class Deck
                 return cards;
             }
         )
+        .catch(error => {
+          console.log(error.response)
+        });
     }
 
     // Shuffles this deck
@@ -54,6 +57,9 @@ class Deck
                 return p
             }
         )
+        .catch(error => {
+          console.log(error.response)
+        });
     }
 
     // Draws num number of cards from this deck and puts them in pile name
