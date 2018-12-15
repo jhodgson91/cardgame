@@ -1,148 +1,76 @@
 import React, { Component } from 'react';
-import { Grid, Paper, Typography, Button, List, ListItem } from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
+import './App.css';
+import $ from 'jquery';
+import 'foundation-sites';
 
-import { getDeck } from "../api"
-
-
-const styles = theme => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: '#eeeeee'
-  },
-  header: {
-    backgroundColor: theme.palette.background.default,
-    color: theme.palette.primary.main,
-    padding: theme.spacing.unit * 2,
-    textAlign: 'center'
-  },
-
-  section: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing.unit * 2,
-    textAlign: 'center',
-    color: theme.palette.secondary.main
-  },
-
-  // Text
-  title: {
-    fontSize: 20,
-    color: theme.palette.primary.main
-  },
-
-  error:{
-    padding: theme.spacing.unit * 2,
-    fontSize: 20,
-    color: theme.palette.error.main
-  },
-
-  subtitle: {
-    fontSize: 15,
-    color: theme.palette.secondary.main
+// This is what it could look like with less rubbish colours and designs: https://whip-waiter.glitch.me
+class Game extends Component {
+  
+  componentDidMount() {
+    $(document).foundation();
   }
-});
-
-class App extends Component {
-
-  state = {
-    isReady: false,
-    deck: null,
-    p1Cards: [],
-    p2Cards: []
-  }
-
-  componentDidMount = () => {
-
-    getDeck({ shuffled: true }).then(
-      deck => {
-        this.setState({
-          isReady: true,
-          deck: deck
-        })
-      }
-    )
-  }
-
+  
   render() {
-    const { classes } = this.props
+    return(
+      <div className="grid-x">
+        <header className="cell">
 
-    var p2CardViews = []
-    this.state.p2Cards.forEach(card => {
-      p2CardViews.push(<ListItem key={card.code}>{card.value} of {card.suit}</ListItem>)
-    })
+          <section id="hero" className="hero">
+            <div className="grid-container">
+              <div className="grid-x grid-padding-x align-center">
+                <div className="small-12">
+                  <h1>Card game</h1>
+                </div>
+              </div>
+            </div>
+          </section>
 
-    var p1CardViews = []
-    this.state.p1Cards.forEach(card => {
-      p1CardViews.push(<ListItem key={card.code}>{card.value} of {card.suit}</ListItem>)
-    })
+          <section id="deck">
+            <div className="grid-container">
+              <div className="grid-x grid-padding-x align-center">
+                <div className="small-12">
+                  <h2>This is the deck</h2>
+                  <div className="card"></div>
+                </div>
+              </div>
+            </div>
+          </section>
 
-    return (
+        </header>
 
-      <Grid container justify="center" spacing={8} className={classes.root}>
+        <main className="cell">
 
-        <Grid item xs={12}>
-          <Paper className={classes.header}>
-            <Typography className={classes.title}>
-              Card Game: Using deck  {this.state.isReady && this.state.deck.deck_id }
-            </Typography>
-          </Paper>
-        </Grid>
+          <section id="players">
+            <div className="grid-container">
+              <div className="grid-x grid-padding-x align-center">
+                <div className="small-12">
+                  <h2>These are the players</h2>
+                  <div className="grid-x grid-padding-x text-center"> 
 
-        <Grid item xs={12} >
-          <Paper className={classes.section}>
-            <Button variant="contained" onClick={() => {this.onAddCardClicked(1)}}>Draw Card to P1</Button>
-            <Button variant="contained" onClick={() => {this.onAddCardClicked(2)}}>Draw Card to P2</Button>
-            {this.state.isReady && this.state.deck.remaining === 0 && <Typography className={classes.error}>No more cards!</Typography>}
-          </Paper>
-        </Grid>
+                      <div id="player" className="cell small-6">
+                        <h3>Player 1</h3>
+                        <div className="card"></div>
+                        <p>Remaining:</p>
+                      </div>
 
-        <Grid item xs={6}>
-          <Paper className={classes.section}>
-            <Typography className={classes.title}>Player 1 Cards</Typography>
-            <List>
-              {p1CardViews}
-            </List>
-          </Paper>
-        </Grid>
+                      <div id="ai" className="cell small-6">
+                        <h3>Player 2</h3>
+                        <div className="card"></div>
+                        <p>Remaining:</p>
+                      </div>
 
-        <Grid item xs={6}>
-          <Paper className={classes.section}>
-            <Typography className={classes.title}>Player 2 Cards</Typography>
-            <List>
-              {p2CardViews}
-            </List>
-          </Paper>
-        </Grid>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
 
-      </Grid>
-
+        </main>
+      </div>
+      
     );
   }
-
-  onAddCardClicked(player)
-  {
-    if(this.state.isReady && this.state.deck.remaining > 0)
-    {
-      this.state.deck.drawCards(1).then(
-        cards => {
-          switch (player) {
-            case 1:
-              this.setState({
-                p1Cards: [...this.state.p1Cards, ...cards]
-              })
-              break;
-            case 2:
-              this.setState({
-                p2Cards: [...this.state.p2Cards, ...cards]
-              })
-              break;
-            default:
-              break;
-          }
-        }
-      )
-    }
-  }
+  
 }
 
-export default withStyles(styles)(App);
+export default Game;
