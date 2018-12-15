@@ -64,16 +64,6 @@ class DrawCardDemo extends Component {
   render() {
     const { classes } = this.props
 
-    var p2CardViews = []
-    this.state.p2Cards.forEach(card => {
-      p2CardViews.push(<ListItem key={card.code}>{card.value} of {card.suit}</ListItem>)
-    })
-
-    var p1CardViews = []
-    this.state.p1Cards.forEach(card => {
-      p1CardViews.push(<ListItem key={card.code}>{card.value} of {card.suit}</ListItem>)
-    })
-
     return (
 
       <Grid container justify="center" spacing={8} className={classes.root}>
@@ -81,7 +71,7 @@ class DrawCardDemo extends Component {
         <Grid item xs={12}>
           <Paper className={classes.header}>
             <Typography className={classes.title}>
-              Card Game: Using deck  {this.state.isReady && this.state.deck.deck_id }
+              Card Game: Using deck  {this.state.isReady && this.state.deck.id }
             </Typography>
           </Paper>
         </Grid>
@@ -98,7 +88,7 @@ class DrawCardDemo extends Component {
           <Paper className={classes.section}>
             <Typography className={classes.title}>Player 1 Cards</Typography>
             <List>
-              {p1CardViews}
+              {this.p1CardViews}
             </List>
           </Paper>
         </Grid>
@@ -107,7 +97,7 @@ class DrawCardDemo extends Component {
           <Paper className={classes.section}>
             <Typography className={classes.title}>Player 2 Cards</Typography>
             <List>
-              {p2CardViews}
+              {this.p2CardViews}
             </List>
           </Paper>
         </Grid>
@@ -117,6 +107,22 @@ class DrawCardDemo extends Component {
     );
   }
 
+  get p1CardViews() {
+    var result = []
+    this.state.p1Cards.forEach(card => {
+      result.push(<ListItem key={card.code}>{card.value} of {card.suit}</ListItem>)
+    })
+    return result
+  }
+
+  get p2CardViews() {
+    var result = []
+    this.state.p2Cards.forEach(card => {
+      result.push(<ListItem key={card.code}>{card.value} of {card.suit}</ListItem>)
+    })
+    return result
+  }
+  
   onAddCardClicked(player)
   {
     if(this.state.isReady && this.state.deck.remaining > 0)
