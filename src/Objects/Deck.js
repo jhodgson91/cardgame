@@ -1,6 +1,6 @@
 import axios from 'axios'
 import Card from './Card'
-import Pile from './Pile.ts'
+import Pile from './Pile'
 import { api, getCardKeys } from '../api'
 
 

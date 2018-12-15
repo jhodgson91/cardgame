@@ -3,11 +3,6 @@ import { api, getCardKeys } from '../api';
 
 import Card from './Card'
 
-const stringLitArray = <L extends string>(arr: L[]) => arr;
-const pilePosition = stringLitArray(["bottom", "top"])
-export type PilePosition = (typeof pilePosition)[number]
-const isPilePosition = (x: any): x is PilePosition => pilePosition.includes(x)
-
 class Pile
 {
     deck_id = ""
