@@ -1,3 +1,35 @@
-.hero{
+/* CSS files add styling rules to your content */
+
+*{
+  color:white;
+}
+
+
+#hero{
+  background:blue;
+}
+
+#deck{
+  background:green;
+}
+
+#players{
+  background:orange;
+}
+
+#player{
+  background:black;
+}
+
+#ai{
   background:red;
+}
+
+.card{
+  text-align:center;
+  height:320px;
+  width:240px;
+  background:aliceblue;
+  margin: 0 auto;
+  margin-bottom:24px;
 }
