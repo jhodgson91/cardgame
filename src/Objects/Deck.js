@@ -1,6 +1,7 @@
 import axios from 'axios'
 import Card from './Card'
-import { api } from '../api'
+import Pile from './Pile.ts'
+import { api, getCardKeys } from '../api'
 
 
 class Deck
@@ -8,8 +9,14 @@ class Deck
     constructor(data)
     {
         this.data = data
+        if(this.data.piles === undefined)
+        {
+            this.data.piles = {}
+        }
     }
 
+    // Draws num number of cards from this deck
+    // Returns an array of Card objects
     drawCards(num = 1)
     {
         return axios.get(`${this.url}/draw/?count=${num}`)
@@ -27,6 +34,7 @@ class Deck
         )
     }
 
+    // Shuffles this deck
     shuffle()
     {
         return axios.get(`${this.url}/shuffle/`).then(
@@ -36,6 +44,28 @@ class Deck
         );
     }
 
+    // Creates a new pile with an optional array of drawn cards
+    newPile(name, cards = []) {
+        return axios.get(`${this.url}/pile/${name}/add/?cards=${getCardKeys(cards)}`)
+        .then(
+            response => {
+                let p = new Pile(this.id, name, response.data.piles[name].remaining)
+                this.data.piles[name] = p
+                return p
+            }
+        )
+    }
+
+    // Draws num number of cards from this deck and puts them in pile name
+    drawIntoPile(name, num = 1) {
+        return this.drawCards(num).then(
+            cards => {
+                return this.newPile(name, cards)
+            }
+        )
+    }
+
+    // getters
     get id() {
         return this.data.deck_id;
     }
@@ -45,7 +75,11 @@ class Deck
     get remaining() {
       return this.data.remaining;
     }
+    get piles() {
+        return this.data.piles;
+    }
 
+    // Base URL for this deck
     get url() {
        return api + `deck/${this.id}/`;
     }

@@ -12,3 +12,13 @@ export function getDeck({deck_id = "new", shuffled = true} = {})
     }
   )
 }
+
+export function getCardKeys(cards = []){
+  let keys = ""
+  if(cards.length > 0){
+    cards.forEach(currentItem => {
+      keys += `${currentItem.code},`
+    });
+  }
+  return keys
+}
