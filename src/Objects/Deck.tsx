@@ -22,10 +22,13 @@ class Deck {
         piles: {}
     }
 
-    constructor(data: DeckData) {
-        this.data = data
-        if (this.data.piles === undefined) {
-            this.data.piles = {}
+    constructor(data: DeckData | undefined = undefined) {
+        if(data !== undefined)
+        {
+            this.data = data as DeckData
+            if (this.data.piles === undefined) {
+                this.data.piles = {}
+            }
         }
     }
 

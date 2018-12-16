@@ -33,7 +33,7 @@ class Pile {
         return axios.get(`${this.url}/shuffle/`)
     }
 
-    async add(cards = []) {
+    async add(cards: Card[] = []) {
         return axios.get(`${this.url}/add/?cards=${api.getCardKeys(cards)}/`)
             .then(
                 response => {
