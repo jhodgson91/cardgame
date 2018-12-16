@@ -5,6 +5,10 @@
   "dependencies": {
     "@material-ui/core": "^3.6.2",
     "@material-ui/styles": "^3.0.0-alpha.3",
+    "@types/jest": "^23.3.10",
+    "@types/node": "^10.12.15",
+    "@types/react": "^16.7.17",
+    "@types/react-dom": "^16.0.11",
     "axios": "^0.18.0",
     "foundation-sites": "^6.5.1",
     "jquery": "^3.3.1",

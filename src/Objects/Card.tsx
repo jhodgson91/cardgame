@@ -1,7 +1,15 @@
+export interface CardData {
+    image: string,
+    value: string,
+    suit: string,
+    code: string
+}
 
 class Card
 {
-    constructor(data)
+    data: CardData
+
+    constructor(data:CardData)
     {
         this.data = data
     }
@@ -18,7 +26,6 @@ class Card
     get code() {
         return this.data.code;
     }
-    
 }
 
 export default Card

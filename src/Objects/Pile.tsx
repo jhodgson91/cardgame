@@ -1,26 +1,26 @@
 import axios from 'axios';
 import { api, getCardKeys } from '../api';
 
-import Card from './Card'
+import Card, { CardData } from './Card'
 
 class Pile
 {
     deck_id = ""
     name = ""
-    cards = []
+    cards:Card[] = []
 
-    constructor(deck_id, name, cards = []) {
+    constructor(deck_id:string, name:string, cards:Card[] = []) {
         this.deck_id = deck_id
         this.name = name
         this.cards = cards
     }
 
-    list(){
+    async list(){
         return axios.get(`${this.url}/list/`)
         .then(response => {
-            var cards = []
-            response.data.piles[this.name].cards.forEach(currentItem => {
-                cards.push(new Card(currentItem))
+            var cards:Card[] = []
+            response.data.piles[this.name].cards.forEach(function(c: CardData){
+                cards.push(new Card(c))
             });
 
             // The API knows better than us what the cards should be
@@ -30,17 +30,17 @@ class Pile
         })
     }
 
-    shuffle() {
+    async shuffle() {
         return axios.get(`${this.url}/shuffle/`)
     }
 
-    add(cards = []){
+    async add(cards = []){
         return axios.get(`${this.url}/add/?cards=${getCardKeys(cards)}`)
         .then(
             response => {
                 // Checked this in the API - adding duplicate cards shifts them up the pile
-                cards.forEach(card => {
-                    var idx =this.cards.findIndex(c => c.code === card.code) 
+                cards.forEach((card:CardData) => {
+                    var idx =this.cards.findIndex( (c:CardData) => c.code === card.code) 
                     if(idx >= 0){
                         this.cards.splice(idx, 1)
                     }
