@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Grid, Paper, Typography, Button, List, ListItem } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
-import { getDeck } from "../api"
+import  * as api from "../api"
 
 const styles = theme => ({
   root: {
@@ -44,21 +44,19 @@ class DrawCardDemo extends Component {
 
   state = {
     isReady: false,
-    deck: null,
-    p1Cards: [],
-    p2Cards: []
+    deck: null
   }
 
-  componentDidMount = () => {
+  async componentDidMount() {
+    let d = await api.getDeck()
+    await d.newPile('main')
+    await d.drawIntoPile('p1', 26)
+    await d.drawIntoPile('p2', 26)
 
-    getDeck({ shuffled: true }).then(
-      deck => {
-        this.setState({
-          isReady: true,
-          deck: deck
-        })
-      }
-    )
+    this.setState({
+      isReady: true,
+      deck: d
+    })
   }
 
   render() {
@@ -78,17 +76,19 @@ class DrawCardDemo extends Component {
 
         <Grid item xs={12}>
           <Paper className={classes.section}>
-            <Button variant="contained" onClick={() => {this.onAddCardClicked(1)}}>Draw Card to P1</Button>
-            <Button variant="contained" onClick={() => {this.onAddCardClicked(2)}}>Draw Card to P2</Button>
-            {this.state.isReady && this.state.deck.remaining === 0 && <Typography className={classes.error}>No more cards!</Typography>}
+          <Typography className={classes.title}>Main cards</Typography>
+            <List>
+              {this.cardViews('main')}
+            </List>
           </Paper>
         </Grid>
 
         <Grid item xs={6}>
           <Paper className={classes.section}>
             <Typography className={classes.title}>Player 1 Cards</Typography>
+            <Button variant="contained" onClick={() => { this.playCard('p1')} }>Play card</Button>
             <List>
-              {this.p1CardViews}
+              {this.cardViews('p1')}
             </List>
           </Paper>
         </Grid>
@@ -96,8 +96,9 @@ class DrawCardDemo extends Component {
         <Grid item xs={6}>
           <Paper className={classes.section}>
             <Typography className={classes.title}>Player 2 Cards</Typography>
+            <Button variant="contained" onClick={() => { this.playCard('p2')} }>Play card</Button>
             <List>
-              {this.p2CardViews}
+              {this.cardViews('p2')}
             </List>
           </Paper>
         </Grid>
@@ -107,45 +108,20 @@ class DrawCardDemo extends Component {
     );
   }
 
-  get p1CardViews() {
-    var result = []
-    this.state.p1Cards.forEach(card => {
-      result.push(<ListItem key={card.code}>{card.value} of {card.suit}</ListItem>)
-    })
-    return result
+  async playCard(player) {
+    let card = await this.state.deck.piles[player].drawCardFrom('top')
+    await this.state.deck.piles.main.add([card])
+    this.forceUpdate()
   }
 
-  get p2CardViews() {
+  cardViews(pile){
     var result = []
-    this.state.p2Cards.forEach(card => {
-      result.push(<ListItem key={card.code}>{card.value} of {card.suit}</ListItem>)
-    })
-    return result
-  }
-  
-  onAddCardClicked(player)
-  {
-    if(this.state.isReady && this.state.deck.remaining > 0)
-    {
-      this.state.deck.drawCards(1).then(
-        cards => {
-          switch (player) {
-            case 1:
-              this.setState({
-                p1Cards: [...this.state.p1Cards, ...cards]
-              })
-              break;
-            case 2:
-              this.setState({
-                p2Cards: [...this.state.p2Cards, ...cards]
-              })
-              break;
-            default:
-              break;
-          }
-        }
-      )
+    if(this.state.isReady){
+      this.state.deck.piles[pile].cards.forEach(card => {
+        result.push(<ListItem key={card.code}>{card.value} of {card.suit}</ListItem>)
+      })
     }
+    return result
   }
 }
 

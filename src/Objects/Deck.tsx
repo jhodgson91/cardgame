@@ -3,7 +3,7 @@ import Card from './Card'
 import Pile from './Pile'
 import * as api from '../api'
 
-interface DeckData {
+type DeckData = {
     success: boolean,
     deck_id: string,
     shuffled: boolean

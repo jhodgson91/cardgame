@@ -6,7 +6,13 @@ import Card, { CardData } from "./Objects/Card"
 export type DrawFromType = 'top' | 'bottom'
 
 export type CardSuitCode = 'S' | 'D' | 'C' | 'H'
-export enum CardSuit { SPADES, DIAMONDS, CLUBS, HEARTS }
+export enum CardSuit {
+  SPADES = 'Spades',
+  DIAMONDS = 'Diamonds',
+  CLUBS = 'Clubs',
+  HEARTS = 'Hearts'
+}
+
 export const CardSuitMap: { [key in CardSuitCode]: CardSuit } = {
   'S': CardSuit.SPADES,
   'D': CardSuit.DIAMONDS,
@@ -15,7 +21,21 @@ export const CardSuitMap: { [key in CardSuitCode]: CardSuit } = {
 }
 
 export type CardValueCode = 'A' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '0' | 'J' | 'Q' | 'K'
-export enum CardValue { ACE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING }
+export enum CardValue { 
+  ACE = 'Ace', 
+  TWO = '2',
+  THREE = '3', 
+  FOUR = '4',
+  FIVE = '5', 
+  SIX = '6',
+  SEVEN = '7', 
+  EIGHT = '8',
+  NINE = '9', 
+  TEN = '10', 
+  JACK = 'Jack', 
+  QUEEN = 'Queen',
+  KING = 'King' 
+}
 export const CardValueMap: { [key in CardValueCode]: CardValue } = {
   'A': CardValue.ACE,
   '2': CardValue.TWO,
@@ -37,7 +57,7 @@ export type CardCode = 'AS' | '2S' | '3S' | '4S' | '5S' | '6S' | '7S' | '8S' | '
   'AC' | '2C' | '3C' | '4C' | '5C' | '6C' | '7C' | '8C' | '9C' | '0C' | 'JC' | 'QC' | 'KC' |
   'AH' | '2H' | '3H' | '4H' | '5H' | '6H' | '7H' | '8H' | '9H' | '0H' | 'JH' | 'QH' | 'KH'
 
-export interface RuleSet {
+export type RuleSet = {
   AceHigh: boolean
   PictureCardValue: number
 }
@@ -66,7 +86,7 @@ export function getCardValue(card: Card, rules: RuleSet = defaultRuleSet): numbe
     return rules.PictureCardValue
   }
   else {
-    return card.value
+    return parseInt(card.value)
   }
 }
 
