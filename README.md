@@ -17,6 +17,12 @@ You will also see any lint errors in the console.
 Launches the test runner in the interactive watch mode.<br>
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
+The test framework uses [Jest](https://jestjs.io/docs/en/getting-started) with [Typescript](https://github.com/kulshekhar/ts-jest).
+
+Get coverage with "npm test -- --coverage".
+
+The file naming convention is foo.test.tsx and should be in the same folder as the file is tests like foo.tsx to keep the imports consistent.
+
 ### `npm run build`
 
 Builds the app for production to the `build` folder.<br>
