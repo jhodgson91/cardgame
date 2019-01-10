@@ -66,9 +66,11 @@ class Deck {
         return axios.get(`${this.url}/pile/${name}/add/?cards=${api.getCardKeys(cards)}`)
             .then(
                 response => {
-                    let p = new Pile(this.id, name, cards)
-                    this.data.piles[name] = p
-                    return p
+                    if(response.data.success) {
+                        let p = new Pile(this.id, name, cards)
+                        this.data.piles[name] = p
+                        return p
+                    }
                 }
             );
     }
@@ -77,8 +79,16 @@ class Deck {
     async drawIntoPile(name: string, num: number = 1) {
         let cards = await this.drawCards(num)
         if (cards instanceof Array) {
-            let pile = await this.newPile(name, cards)
-            return pile
+            if(this.piles[name] != undefined)
+            {
+                await this.piles[name].add(cards)
+                return this.piles[name]
+            }
+            else
+            {
+                let pile = await this.newPile(name, cards)
+                return pile;
+            }
         }
     }
 
