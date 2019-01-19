@@ -6,7 +6,7 @@ import { Theme } from '@material-ui/core/styles/createMuiTheme'
 import Deck from '../Objects/Deck'
 import * as api from "../api"
 
-const styles = ( theme : Theme) => createStyles({
+const styles = (theme: Theme) => createStyles({
   root: {
     flexGrow: 1,
     backgroundColor: '#eeeeee'
@@ -65,7 +65,7 @@ class DrawCardDemo extends React.Component<WithStyles<typeof styles>> {
   }
 
   render() {
-    let classes  = this.props.classes
+    let classes = this.props.classes
 
     return (
 

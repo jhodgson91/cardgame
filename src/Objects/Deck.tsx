@@ -23,8 +23,7 @@ class Deck {
     }
 
     constructor(data: DeckData | undefined = undefined) {
-        if(data !== undefined)
-        {
+        if (data !== undefined) {
             this.data = data as DeckData
             if (this.data.piles === undefined) {
                 this.data.piles = {}
@@ -66,7 +65,7 @@ class Deck {
         return axios.get(`${this.url}/pile/${name}/add/?cards=${api.getCardKeys(cards)}`)
             .then(
                 response => {
-                    if(response.data.success) {
+                    if (response.data.success) {
                         let p = new Pile(this.id, name, cards)
                         this.data.piles[name] = p
                         return p
@@ -79,13 +78,11 @@ class Deck {
     async drawIntoPile(name: string, num: number = 1) {
         let cards = await this.drawCards(num)
         if (cards instanceof Array) {
-            if(this.piles[name] != undefined)
-            {
+            if (this.piles[name] != undefined) {
                 await this.piles[name].add(cards)
                 return this.piles[name]
             }
-            else
-            {
+            else {
                 let pile = await this.newPile(name, cards)
                 return pile;
             }

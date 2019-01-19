@@ -21,8 +21,8 @@ it('should Create a deck', async () => {
 });
 
 it('should Get an existing deck', async () => {
-    if(deck) {
-        let deckCopy = await api.getDeck({deck_id: deck.id});
+    if (deck) {
+        let deckCopy = await api.getDeck({ deck_id: deck.id });
         expect(deckCopy).toBeDefined();
     }
 });

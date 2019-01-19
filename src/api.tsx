@@ -21,20 +21,20 @@ export const CardSuitMap: { [key in CardSuitCode]: CardSuit } = {
 }
 
 export type CardValueCode = 'A' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '0' | 'J' | 'Q' | 'K'
-export enum CardValue { 
-  ACE = 'Ace', 
+export enum CardValue {
+  ACE = 'Ace',
   TWO = '2',
-  THREE = '3', 
+  THREE = '3',
   FOUR = '4',
-  FIVE = '5', 
+  FIVE = '5',
   SIX = '6',
-  SEVEN = '7', 
+  SEVEN = '7',
   EIGHT = '8',
-  NINE = '9', 
-  TEN = '10', 
-  JACK = 'Jack', 
+  NINE = '9',
+  TEN = '10',
+  JACK = 'Jack',
   QUEEN = 'Queen',
-  KING = 'King' 
+  KING = 'King'
 }
 export const CardValueMap: { [key in CardValueCode]: CardValue } = {
   'A': CardValue.ACE,

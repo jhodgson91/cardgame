@@ -86,7 +86,7 @@ it('should Draw cards from Top/Bottom', async () => {
         if (pile) {
             let topcard = pile.cards[pile.remaining - 1];
             let bottomcard = pile.cards[0];
-            
+
             let card = await pile.drawCardFrom("top");
             expect(card).toEqual(topcard);
             expect(pile.cards).toHaveLength(9);
