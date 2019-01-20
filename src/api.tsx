@@ -79,7 +79,7 @@ export async function getDeck({ deck_id = "new", shuffled = true } = {}) {
 }
 
 export function getCardValue(card: Card, rules: RuleSet = defaultRuleSet): number {
-  if (card.value === CardValue.ACE && rules.AceHigh) {
+  if (card.value === CardValue.ACE) {
     return rules.AceHigh ? rules.PictureCardValue + 1 : 1
   }
   else if (card.isPictureCard) {
