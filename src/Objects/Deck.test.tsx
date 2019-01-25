@@ -37,11 +37,16 @@ it('should Draw 10 cards from a Deck', async () => {
 
 it('should error if too many cards are drawn', async () => {
     if(deck) {
-      //Currently using the same deck as the test above so needs 42 cards to max out the deck
-      let drawTooMany = await deck.drawCards(42);
-      expect(drawTooMany).toHaveLength(42);
-      let error = drawTooMany ? await deck.drawCards(1) : expect(error).toBeUndefined();
-      expect(error.success).toBe(false);
+        //Currently using the same deck as the test above so needs 42 cards to max out the deck
+        let drawTooMany = await deck.drawCards(42);
+        expect(drawTooMany).toHaveLength(42);
+        if(drawTooMany != undefined) {
+            let error = await deck.drawCards(1);  // Always make the API call 
+            expect(error).toBeDefined();          // Expect that the call itself was a success
+            if (error) { // I don't know if the expect will bomb out if error wasn't defined, if it does this if can go away
+                expect(error.success).toBe(false);    // Expect that the call returned success==false
+            }
+        }
     }
 })
 
