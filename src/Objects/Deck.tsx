@@ -38,17 +38,21 @@ class Deck {
         return axios.get(`${this.url}/draw/?count=${num}`)
             .then(
                 response => {
-                    this.data.remaining = response.data.remaining;
-                    var cards = new Array<Card>(response.data.cards.length);
-                    for (var i = 0; i < cards.length; i++) {
-                        cards[i] = new Card(response.data.cards[i]);
+                    if(response.data.success) {
+                        this.data.remaining = response.data.remaining;
+                        var cards = new Array<Card>(response.data.cards.length);
+                        for (var i = 0; i < cards.length; i++) {
+                            cards[i] = new Card(response.data.cards[i]);
+                        }
+                        return cards;
+                    } else {
+                        return response.data;
                     }
-
-                    return cards;
                 }
             )
             .catch(error => {
-                console.log(error.response)
+                console.log(error.response);
+                return error;
             });
     }
 
