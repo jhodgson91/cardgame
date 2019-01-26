@@ -71,7 +71,6 @@ class DrawCardDemo extends React.Component<WithStyles<typeof styles>> {
     return (
 
       <Grid container justify="center" spacing={8} className={classes.root}>
-        <button className="success button">Banana</button>
 
         <Grid item xs={12}>
           <Paper className={classes.header}>
