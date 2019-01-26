@@ -79,6 +79,15 @@ class DrawCardDemo extends React.Component<WithStyles<typeof styles>> {
             </Typography>
           </Paper>
         </Grid>
+        <section id="hero">
+          <div className="grid-container">
+            <div className="grid-x grid-padding-x align-center">
+              <div className="small-12">
+                <h1>Card game - {this.state.isReady && this.state.deck.id}</h1>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <Grid item xs={12}>
           <Paper className={classes.section}>
