@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Grid, Paper, Typography, Button, List, ListItem } from '@material-ui/core'
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles'
 import { Theme } from '@material-ui/core/styles/createMuiTheme'
+import './Main.scss'
 
 import Deck from '../Objects/Deck'
 import * as api from "../api"
