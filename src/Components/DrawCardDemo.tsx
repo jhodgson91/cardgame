@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './Main.scss'
-
 import Deck from '../Objects/Deck'
 import * as api from "../api"
 
@@ -49,11 +48,11 @@ export default class DrawCardDemo extends React.Component {
                                     
         <section id="deck">
           <div className="grid-container">
-            <div className="grid-x grid-padding-x align-center text-center">
-              <div className="small-10">
-                <h2>House deck</h2>
+            <div className="grid-x grid-padding-x align-center">
+              <div className="cell small-6 small-offset-3">
+                <h2 className="text-center">House deck</h2>
                 <div className="grid-container">
-                  <div className="grid-x grid-padding-x small-up-2 medium-up-3">
+                  <div className="grid-x grid-padding-x small-12">
                     {this.cardViews('main')}
                   </div>
                 </div>
@@ -66,11 +65,11 @@ export default class DrawCardDemo extends React.Component {
         <section id="players">
           <div className="grid-container">
             <div className="grid-x grid-padding-x align-center text-center">
-              <div className="small-12">
+              <div className="cell small-12">
                 <h2>These are the players</h2>
                 <div className="grid-x grid-margin-x align-center text-center"> 
 
-                    <div id="player" className="cell small-5">
+                    <div id="player" className="cell small-6">
                       <div className="cell">
                         <h3>Player 1</h3>
                       </div>
@@ -78,13 +77,13 @@ export default class DrawCardDemo extends React.Component {
                         <button className="button" onClick={() => { this.playCard('p1') }}>Play card</button>
                       </div>
                       <div className="grid-container">
-                        <div className="grid-x grid-padding-x small-up-2 medium-up-3">
+                        <div className="grid-x grid-padding-x small-12">
                           {this.cardViews('p1')}
                         </div>
                       </div>
                     </div>
 
-                    <div id="ai" className="cell small-5">
+                    <div id="ai" className="cell small-6">
                       <div className="cell">
                         <h3>Player 2</h3>
                       </div>
@@ -92,7 +91,7 @@ export default class DrawCardDemo extends React.Component {
                         <button className="button" onClick={() => { this.playCard('p2') }}>Play card</button>
                       </div>
                       <div className="grid-container">
-                        <div className="grid-x grid-padding-x small-up-2 medium-up-3">
+                        <div className="grid-x grid-padding-x small-12">
                           {this.cardViews('p2')}
                         </div>
                       </div>
@@ -137,7 +136,7 @@ export default class DrawCardDemo extends React.Component {
       //} else {
         this.state.deck.piles[pile].cards.forEach(card => {
           result.push(
-            <div className="card small-3" key={card.code}>
+            <div className="card small-4" key={card.code}>
               <img className="card-img" src={card.image} />
             </div>
           )
