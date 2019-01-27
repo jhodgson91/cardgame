@@ -1,20 +1,29 @@
 import React, { Component } from 'react';
+import Hero from './Hero'
 import './Main.scss'
 import Deck from '../Objects/Deck'
 import * as api from "../api"
 
-
-
-export default class DrawCardDemo extends React.Component {
+//Define props types
+export interface Props {
   
-  //constructor(props) {
-    //super(props);
-    state = {
+}
+
+//Define state types
+interface State {
+  isReady:boolean;
+  deck: Deck;
+}
+
+export default class DrawCardDemo extends React.Component<Props, State> {
+  
+  constructor(props: Props) {
+    super(props);
+    this.state = {
       isReady: false,
       deck: new Deck()
-    }
-    //this.playCard = this.playCard.bind(this)
-  //}
+    };
+  }
   
   async componentDidMount() {
     let d = await api.getDeck()
@@ -36,15 +45,7 @@ export default class DrawCardDemo extends React.Component {
 
       <div className="cell">
         
-        <section id="hero">
-          <div className="grid-container">
-            <div className="grid-x grid-padding-x align-center text-center">
-              <div className="small-12">
-                <h1>Card game - {this.state.isReady && this.state.deck.id}</h1>
-              </div>
-            </div>
-          </div>
-        </section>
+        <Hero title={this.state.isReady && this.state.deck.id}/>
                                     
         <section id="deck">
           <div className="grid-container">
@@ -120,20 +121,6 @@ export default class DrawCardDemo extends React.Component {
   cardViews(pile: string) {
     var result = new Array<any>()
     if (this.state.isReady) {
-      /*if(pile == 'main') {
-        let card0 = this.state.deck.piles[pile].cards[0];
-        let card1 = this.state.deck.piles[pile].cards[1];
-        result.push(
-          <div>
-            <div className="card small-3" key={card0.code}>
-              <img className="card-img" src={card0.image} />
-            </div>
-            <div className="card small-3" key={card1.code}>
-              <img className="card-img" src={card1.image} />
-            </div>
-          </div>
-        )*/
-      //} else {
         this.state.deck.piles[pile].cards.forEach(card => {
           result.push(
             <div className="card small-4" key={card.code}>
@@ -141,8 +128,6 @@ export default class DrawCardDemo extends React.Component {
             </div>
           )
         })
-      //}
-      
     }
     return result
   }
