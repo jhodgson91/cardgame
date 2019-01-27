@@ -31,6 +31,11 @@ class Pile {
 
     async shuffle() {
         return axios.get(`${this.url}/shuffle/`)
+          .then(
+            response => {
+              console.log(response.data.success)
+              return response.data.success
+          })
     }
 
     async add(cards: Card[] = []) {
@@ -49,7 +54,8 @@ class Pile {
                 }
             )
     }
-
+    
+    /* This function is not supported until we can specifically draw cards from the deck
     async drawSpecificCards(cards: api.CardCode[]) {
         if (cards.length === 0) {
             return []
@@ -78,6 +84,7 @@ class Pile {
 
         }
     }
+    */
 
     async drawCards(num: number = 1) {
         return axios.get(`${this.url}/draw/?count=${num}`)

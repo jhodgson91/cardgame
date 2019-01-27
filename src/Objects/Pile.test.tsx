@@ -1,11 +1,14 @@
 import * as api from '../api'
 import Deck, { } from './Deck';
 import Pile, { } from './Pile';
+//We should probably mock this rather than using everything to test this
+import Card from './Card';
 
 var deck: Deck | undefined;
 
 // TODO - this gets as many decks as there are tests, would be nice to have a way to reset the deck...
 // Currently not possible with the api we're using, maybe if I ever finish the Rust one I can add this
+// Other option would be to either request a new deck for each test OR mock the api
 beforeEach(async () => {
     deck = await api.getDeck({ shuffled: false });
     expect(deck).toBeDefined();
@@ -18,10 +21,48 @@ it('should Create a new pile', async () => {
     }
 });
 
+it('should shuffle the pile', async () => {
+  if (deck) {
+    let pile = await deck.newPile("test");
+    expect(pile).toBeDefined();
+    let result = await pile.shuffle();
+    expect(result).toBe(true);
+  }
+})
+
+/*This is not needed until the function works
+it('should Draw specific cards', async () => {
+  if(deck) {
+    let pile = await deck.newPile("test");
+    expect(pile).toBeDefined()
+    let testCard = [];
+    let testCardData = [
+      {
+        image: 'https://deckofcardsapi.com/static/img/AC.png',
+        value: 'A',
+        suit: 'C',
+        code: 'AC'
+      },
+      {
+        image: 'https://deckofcardsapi.com/static/img/AD.png',
+        value: 'A',
+        suit: 'D',
+        code: 'AD'
+      }
+    ];
+    testCardData.forEach(i => {
+      testCard.push(new Card(i));
+    });
+    let result = await pile.drawSpecificCards(testCard);
+    expect(pile).toBe('');
+  }
+})
+*/
+
 it('should Create a pile with a list of cards', async () => {
     if (deck) {
         let cards = await deck.drawCards(10);
-        expect(cards).toHaveLength(10)
+        expect(cards).toHaveLength(10);
         if (cards) {
             let pile = await deck.newPile("test", cards);
             expect(pile).toBeDefined();
