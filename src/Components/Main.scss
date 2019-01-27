@@ -1,7 +1,57 @@
+//Add foundation
 @import '~foundation-sites/scss/foundation';
 
-@include foundation-everything;
+//Foundation globals
+@include foundation-global-styles;
+@include foundation-forms;
+@include foundation-typography;
 
-*{
-  background:black;
+//Foundation grid
+@include foundation-xy-grid-classes;
+
+//Foundation specific components
+@include foundation-card;
+@include foundation-button;
+
+ul li{
+  list-style:none;
 }
+
+button.button{
+  margin:0.1rem;
+  margin-bottom:1rem;
+}
+
+#hero{
+  background:#2d2d2d;
+  color: #f7e04c;
+}
+
+#deck{
+ margin-bottom:20px;
+}
+
+#players{
+  padding:2rem 0;
+  background:#999;
+}
+
+#player{
+  border:0.1rem solid black;
+  border-radius:1rem;
+  background:white;
+}
+
+#ai{
+  color:darkred;
+  border:0.1rem solid darkred;
+  border-radius:1rem;
+  background:white;
+}
+ 
+.card{
+  padding:1rem;
+  border:0;
+}
+
+

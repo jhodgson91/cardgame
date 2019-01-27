@@ -1,56 +1,21 @@
 import React, { Component } from 'react';
-import { Grid, Paper, Typography, Button, List, ListItem } from '@material-ui/core'
-import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles'
-import { Theme } from '@material-ui/core/styles/createMuiTheme'
 import './Main.scss'
-
 import Deck from '../Objects/Deck'
 import * as api from "../api"
 
-const styles = (theme: Theme) => createStyles({
-  root: {
-    flexGrow: 1,
-    backgroundColor: '#eeeeee'
-  },
-  header: {
-    backgroundColor: theme.palette.background.default,
-    color: theme.palette.primary.main,
-    padding: theme.spacing.unit * 2,
-    textAlign: 'center'
-  },
 
-  section: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing.unit * 2,
-    textAlign: 'center',
-    color: theme.palette.secondary.main
-  },
 
-  // Text
-  title: {
-    fontSize: 20,
-    color: theme.palette.primary.main
-  },
-
-  error: {
-    padding: theme.spacing.unit * 2,
-    fontSize: 20,
-    color: theme.palette.error.main
-  },
-
-  subtitle: {
-    fontSize: 15,
-    color: theme.palette.secondary.main
-  }
-});
-
-class DrawCardDemo extends React.Component<WithStyles<typeof styles>> {
-
-  state = {
-    isReady: false,
-    deck: new Deck()
-  }
-
+export default class DrawCardDemo extends React.Component {
+  
+  //constructor(props) {
+    //super(props);
+    state = {
+      isReady: false,
+      deck: new Deck()
+    }
+    //this.playCard = this.playCard.bind(this)
+  //}
+  
   async componentDidMount() {
     let d = await api.getDeck()
     if (d) {
@@ -65,72 +30,121 @@ class DrawCardDemo extends React.Component<WithStyles<typeof styles>> {
     }
   }
 
-  render() {
-    let classes = this.props.classes
-
+  render(): React.ReactNode {
+    
     return (
 
-      <Grid container justify="center" spacing={8} className={classes.root}>
+      <div className="cell">
+        
+        <section id="hero">
+          <div className="grid-container">
+            <div className="grid-x grid-padding-x align-center text-center">
+              <div className="small-12">
+                <h1>Card game - {this.state.isReady && this.state.deck.id}</h1>
+              </div>
+            </div>
+          </div>
+        </section>
+                                    
+        <section id="deck">
+          <div className="grid-container">
+            <div className="grid-x grid-padding-x align-center">
+              <div className="cell small-6 small-offset-3">
+                <h2 className="text-center">House deck</h2>
+                <div className="grid-container">
+                  <div className="grid-x grid-padding-x small-12">
+                    {this.cardViews('main')}
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        </section>
+                                              
+        <section id="players">
+          <div className="grid-container">
+            <div className="grid-x grid-padding-x align-center text-center">
+              <div className="cell small-12">
+                <h2>These are the players</h2>
+                <div className="grid-x grid-margin-x align-center text-center"> 
 
-        <Grid item xs={12}>
-          <Paper className={classes.header}>
-            <Typography className={classes.title}>
-              Card Game: Using deck  {this.state.isReady && this.state.deck.id}
-            </Typography>
-          </Paper>
-        </Grid>
+                    <div id="player" className="cell small-6">
+                      <div className="cell">
+                        <h3>Player 1</h3>
+                      </div>
+                      <div className="cell">
+                        <button className="button" onClick={() => { this.playCard('p1') }}>Play card</button>
+                      </div>
+                      <div className="grid-container">
+                        <div className="grid-x grid-padding-x small-12">
+                          {this.cardViews('p1')}
+                        </div>
+                      </div>
+                    </div>
 
-        <Grid item xs={12}>
-          <Paper className={classes.section}>
-            <Typography className={classes.title}>Main cards</Typography>
-            <List>
-              {this.cardViews('main')}
-            </List>
-          </Paper>
-        </Grid>
+                    <div id="ai" className="cell small-6">
+                      <div className="cell">
+                        <h3>Player 2</h3>
+                      </div>
+                      <div className="cell">
+                        <button className="button" onClick={() => { this.playCard('p2') }}>Play card</button>
+                      </div>
+                      <div className="grid-container">
+                        <div className="grid-x grid-padding-x small-12">
+                          {this.cardViews('p2')}
+                        </div>
+                      </div>
+                      
+                    </div>
 
-        <Grid item xs={6}>
-          <Paper className={classes.section}>
-            <Typography className={classes.title}>Player 1 Cards</Typography>
-            <Button variant="contained" onClick={() => { this.playCard('p1') }}>Play card</Button>
-            <List>
-              {this.cardViews('p1')}
-            </List>
-          </Paper>
-        </Grid>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-        <Grid item xs={6}>
-          <Paper className={classes.section}>
-            <Typography className={classes.title}>Player 2 Cards</Typography>
-            <Button variant="contained" onClick={() => { this.playCard('p2') }}>Play card</Button>
-            <List>
-              {this.cardViews('p2')}
-            </List>
-          </Paper>
-        </Grid>
-
-      </Grid>
+      </div>
 
     );
   }
 
   async playCard(player: string) {
     if (this.state.isReady) {
-      let card = await this.state.deck.piles[player].drawCardFrom('top')
-      await this.state.deck.piles.main.add([card])
-      this.forceUpdate()
+      let card = await this.state.deck.piles[player].drawCardFrom('top');
+      await this.state.deck.piles.main.add([card]);
+      this.forceUpdate();
     }
-  }
+  } 
 
   cardViews(pile: string) {
     var result = new Array<any>()
     if (this.state.isReady) {
-      this.state.deck.piles[pile].cards.forEach(card => {
-        result.push(<ListItem key={card.code}>{card.value} of {card.suit}</ListItem>)
-      })
+      /*if(pile == 'main') {
+        let card0 = this.state.deck.piles[pile].cards[0];
+        let card1 = this.state.deck.piles[pile].cards[1];
+        result.push(
+          <div>
+            <div className="card small-3" key={card0.code}>
+              <img className="card-img" src={card0.image} />
+            </div>
+            <div className="card small-3" key={card1.code}>
+              <img className="card-img" src={card1.image} />
+            </div>
+          </div>
+        )*/
+      //} else {
+        this.state.deck.piles[pile].cards.forEach(card => {
+          result.push(
+            <div className="card small-4" key={card.code}>
+              <img className="card-img" src={card.image} />
+            </div>
+          )
+        })
+      //}
+      
     }
     return result
   }
 }
-
-export default withStyles(styles)(DrawCardDemo);
+ 
