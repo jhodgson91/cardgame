@@ -4,6 +4,7 @@ import Deck from '../Objects/Deck'
 import * as api from "../api"
 
 
+
 export default class DrawCardDemo extends React.Component {
   
   //constructor(props) {
@@ -30,7 +31,6 @@ export default class DrawCardDemo extends React.Component {
   }
 
   render(): React.ReactNode {
-    
     
     return (
 

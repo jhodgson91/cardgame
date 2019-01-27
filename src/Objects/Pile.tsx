@@ -109,7 +109,7 @@ class Pile {
                 response => {
                     let result = new Card(response.data.cards[0])
                     let idx = this.cards.findIndex(card => result.code === card.code)
-                    if(idx >= 0) {
+                    if (idx >= 0) {
                         this.cards.splice(idx, 1)
                     }
                     return result
