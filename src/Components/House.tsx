@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import './Main.scss'
-import House from '../Objects/Deck'
+import Deck from '../Objects/Deck'
 import * as api from "../api"
 
 //Define props types
 export interface Props {
-  cards: string | false;
+  title: string | false;
+  cards: any[] | false;
 }
 
 export default class House extends React.Component<Props> {
@@ -21,7 +22,7 @@ export default class House extends React.Component<Props> {
           <div className="grid-container">
             <div className="grid-x grid-padding-x align-center">
               <div className="cell small-6 small-offset-3">
-                <h2 className="text-center">House deck</h2>
+                <h2 className="text-center">{this.props.title}</h2>
                 <div className="grid-container">
                   <div className="grid-x grid-padding-x small-12">
                     {this.props.cards}

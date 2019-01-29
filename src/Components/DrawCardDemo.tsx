@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Hero from './Hero'
-import House from './Deck'
+import House from './House'
 import './Main.scss'
 import Deck from '../Objects/Deck'
 import * as api from "../api"
@@ -48,23 +48,7 @@ export default class DrawCardDemo extends React.Component<Props, State> {
         
         <Hero title={this.state.isReady && this.state.deck.id}/>
         
-        <Deck cards={this.cardViews('main')} />
-        
-        <section id="deck">
-          <div className="grid-container">
-            <div className="grid-x grid-padding-x align-center">
-              <div className="cell small-6 small-offset-3">
-                <h2 className="text-center">House deck</h2>
-                <div className="grid-container">
-                  <div className="grid-x grid-padding-x small-12">
-                    {this.cardViews('main')}
-                  </div>
-                </div>
-                
-              </div>
-            </div>
-          </div>
-        </section>
+        <House title="House deck" cards={this.cardViews('main')} />
                                               
         <section id="players">
           <div className="grid-container">
