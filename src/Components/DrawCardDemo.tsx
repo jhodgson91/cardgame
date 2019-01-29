@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import Hero from './Hero'
-import House from './House'
+import Hero from '../Components/Hero'
+import House from '../Components/House'
+import Card from '../Components/Card'
+import Player from '../Components/Player'
+import PlayerWrapper from '../Components/PlayerWrapper'
 import './Main.scss'
 import Deck from '../Objects/Deck'
 import * as api from "../api"
@@ -24,6 +27,32 @@ export default class DrawCardDemo extends React.Component<Props, State> {
       isReady: false,
       deck: new Deck()
     };
+    this.playCard = this.playCard.bind(this);
+    this.cardViews = this.cardViews.bind(this);
+  }
+  
+  async playCard(player: string) {
+    if (this.state.isReady) {
+      let d = this.state.deck
+      let card = await d.piles[player].drawCardFrom('top');
+      await d.piles.main.add([card]);
+      
+      this.setState({
+        deck: d
+      })
+    }
+  } 
+  
+  cardViews(pile: string) {
+    let view = new Array<any>();
+    if (this.state.isReady) {
+      this.state.deck.piles[pile].cards.forEach(card => {
+        view.push(
+          <Card key={card.code} src={card.image}/>
+        )
+      })
+    }
+    return view;
   }
   
   async componentDidMount() {
@@ -45,82 +74,33 @@ export default class DrawCardDemo extends React.Component<Props, State> {
     return (
 
       <div className="cell">
-        
         <Hero title={this.state.isReady && this.state.deck.id}/>
-        
-        <House title="House deck" cards={this.cardViews('main')} />
-                                              
-        <section id="players">
-          <div className="grid-container">
-            <div className="grid-x grid-padding-x align-center text-center">
-              <div className="cell small-12">
-                <h2>These are the players</h2>
-                <div className="grid-x grid-margin-x align-center text-center"> 
-
-                    <div id="player" className="cell small-6">
-                      <div className="cell">
-                        <h3>Player 1</h3>
-                      </div>
-                      <div className="cell">
-                        <button className="button" onClick={() => { this.playCard('p1') }}>Play card</button>
-                      </div>
-                      <div className="grid-container">
-                        <div className="grid-x grid-padding-x small-12">
-                          {this.cardViews('p1')}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    
-                    <div id="ai" className="cell small-6">
-                      <div className="cell">
-                        <h3>Player 2</h3>
-                      </div>
-                      <div className="cell">
-                        <button className="button" onClick={() => { this.playCard('p2') }}>Play card</button>
-                      </div>
-                      <div className="grid-container">
-                        <div className="grid-x grid-padding-x small-12">
-                          {this.cardViews('p2')}
-                        </div>
-                      </div>
-                      
-                    </div>
-
-                </div>
-              </div>
+        <House 
+          title="House deck" 
+          cards={this.cardViews('main')}
+        />                               
+        <PlayerWrapper 
+          title="These are players"
+          players={
+            <div className="grid-x grid-margin-x align-center text-center"> 
+              <Player 
+                id="player1" 
+                title="Player 1" 
+                playCard={ () => {this.playCard('p1')} } 
+                cards={this.cardViews('p1')}
+              />
+              <Player 
+                id="player2" 
+                title="Player 2" 
+                playCard={ () => {this.playCard('p2')} } 
+                cards={this.cardViews('p2')}
+              />
             </div>
-          </div>
-        </section>
-
+          }
+        />
       </div>
 
-    );
-  }
-
-  async playCard(player: string) {
-    if (this.state.isReady) {
-      let d = this.state.deck
-      let card = await d.piles[player].drawCardFrom('top');
-      await d.piles.main.add([card]);
-      this.setState({
-        deck: d
-      })
-    }
-  } 
-
-  cardViews(pile: string) {
-    var result = new Array<any>()
-    if (this.state.isReady) {
-        this.state.deck.piles[pile].cards.forEach(card => {
-          result.push(
-            <div className="card small-4" key={card.code}>
-              <img className="card-img" src={card.image} />
-            </div>
-          )
-        })
-    }
-    return result
+    )
   }
 }
  
