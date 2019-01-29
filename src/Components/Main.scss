@@ -13,6 +13,14 @@
 @include foundation-card;
 @include foundation-button;
 
+
+$color-red: darkred;
+$color-black: black;
+$color-white: white;
+$color-dark-grey: #2d2d2d;
+$color-grey: #999;
+$color-yellow: #f7e04c;
+
 ul li{
   list-style:none;
 }
@@ -23,11 +31,11 @@ button.button{
 }
 
 #hero{
-  background:#2d2d2d;
-  color: #f7e04c;
+  background:$color-dark-grey;
+  color: $color-yellow;
 }
 
-#deck{
+#house{
  margin-bottom:20px;
 }
 
@@ -37,16 +45,16 @@ button.button{
 }
 
 #player{
-  border:0.1rem solid black;
+  border:0.1rem solid $color-black;
   border-radius:1rem;
-  background:white;
+  background: $color-white
 }
 
 #ai{
-  color:darkred;
-  border:0.1rem solid darkred;
+  color: $color-red;
+  border:0.1rem solid $color-red;
   border-radius:1rem;
-  background:white;
+  background: $color-white;
 }
  
 .card{

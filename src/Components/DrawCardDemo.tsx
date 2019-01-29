@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Hero from './Hero'
+import House from './Deck'
 import './Main.scss'
 import Deck from '../Objects/Deck'
 import * as api from "../api"
@@ -23,7 +24,6 @@ export default class DrawCardDemo extends React.Component<Props, State> {
       isReady: false,
       deck: new Deck()
     };
-    
   }
   
   async componentDidMount() {
@@ -47,7 +47,9 @@ export default class DrawCardDemo extends React.Component<Props, State> {
       <div className="cell">
         
         <Hero title={this.state.isReady && this.state.deck.id}/>
-                                    
+        
+        <Deck cards={this.cardViews('main')} />
+        
         <section id="deck">
           <div className="grid-container">
             <div className="grid-x grid-padding-x align-center">
@@ -84,7 +86,8 @@ export default class DrawCardDemo extends React.Component<Props, State> {
                         </div>
                       </div>
                     </div>
-
+                    
+                    
                     <div id="ai" className="cell small-6">
                       <div className="cell">
                         <h3>Player 2</h3>
