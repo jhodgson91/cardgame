@@ -23,6 +23,7 @@ export default class DrawCardDemo extends React.Component<Props, State> {
       isReady: false,
       deck: new Deck()
     };
+    
   }
   
   async componentDidMount() {
@@ -112,9 +113,12 @@ export default class DrawCardDemo extends React.Component<Props, State> {
 
   async playCard(player: string) {
     if (this.state.isReady) {
-      let card = await this.state.deck.piles[player].drawCardFrom('top');
-      await this.state.deck.piles.main.add([card]);
-      this.forceUpdate();
+      let d = this.state.deck
+      let card = await d.piles[player].drawCardFrom('top');
+      await d.piles.main.add([card]);
+      this.setState({
+        deck: d
+      })
     }
   } 
 

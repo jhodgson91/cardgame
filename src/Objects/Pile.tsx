@@ -55,36 +55,6 @@ class Pile {
             )
     }
     
-    /* This function is not supported until we can specifically draw cards from the deck
-    async drawSpecificCards(cards: api.CardCode[]) {
-        if (cards.length === 0) {
-            return []
-        }
-        else {
-
-            let cardKeys = ""
-            cards.forEach(card => {
-                cardKeys += `${card},`
-            });
-            cardKeys = cardKeys.slice(0, -1)
-
-            return axios.get(`${this.url}/draw/?cards=${cardKeys}/`)
-                .then(
-                    response => {
-                        let result = api.getCardsFromData(response.data.cards)
-                        result.forEach(card => {
-                            let idx = this.cards.findIndex(localCard => localCard.code === card.code)
-                            if (idx >= 0) {
-                                this.cards.splice(idx, 1)
-                            }
-                        });
-                        return result
-                    }
-                )
-
-        }
-    }
-    */
 
     async drawCards(num: number = 1) {
         return axios.get(`${this.url}/draw/?count=${num}`)
