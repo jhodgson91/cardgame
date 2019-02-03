@@ -16,7 +16,6 @@ export default class House extends React.Component<Props> {
   }
   
   render(): React.ReactNode {
-    
     return (
         <section id="house">
           <div className="grid-container">

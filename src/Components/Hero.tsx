@@ -15,7 +15,6 @@ export default class Hero extends React.Component<Props> {
   }
   
   render(): React.ReactNode {
-    
     return (
         <section id="hero">
           <div className="grid-container">

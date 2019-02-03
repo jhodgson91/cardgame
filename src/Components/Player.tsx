@@ -5,8 +5,7 @@ import * as api from "../api"
 
 //Define props types
 export interface Props {
-  id: string | undefined;
-  title: string | false;
+  title: string;
   playCard: any | false;
   cards: any[] | false;
 }
@@ -18,9 +17,8 @@ export default class Player extends React.Component<Props> {
   }
   
   render(): React.ReactNode {
-    
     return (
-      <div id={this.props.id} className="cell small-6">
+      <div id={this.props.title} className="cell small-6 player">
         <div className="cell">
           <h3>{this.props.title}</h3>
         </div>

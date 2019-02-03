@@ -16,7 +16,6 @@ export default class Card extends React.Component<Props> {
   }
   
   render(): React.ReactNode {
-    
     return (
       <div className="card small-4" key={this.props.key}>
         <img className="card-img" src={this.props.src}/>

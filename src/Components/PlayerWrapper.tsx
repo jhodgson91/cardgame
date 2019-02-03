@@ -16,7 +16,6 @@ export default class PlayerWrapper extends React.Component<Props> {
   }
   
   render(): React.ReactNode {
-    
     return (
       <section id="players">
         <div className="grid-container">

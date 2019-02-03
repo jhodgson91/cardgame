@@ -70,9 +70,9 @@ class Deck {
             .then(
                 response => {
                     if (response.data.success) {
-                        let p = new Pile(this.id, name, cards)
-                        this.data.piles[name] = p
-                        return p
+                        let pile = new Pile(this.id, name, cards)
+                        this.data.piles[name] = pile
+                        return pile
                     }
                 }
             );
@@ -106,7 +106,6 @@ class Deck {
     get piles() {
         return this.data.piles;
     }
-
     // Base URL for this deck
     get url() {
         return `${api.url}/deck/${this.id}/`;

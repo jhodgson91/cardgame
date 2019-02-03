@@ -58,7 +58,7 @@ export type CardCode = 'AS' | '2S' | '3S' | '4S' | '5S' | '6S' | '7S' | '8S' | '
   'AH' | '2H' | '3H' | '4H' | '5H' | '6H' | '7H' | '8H' | '9H' | '0H' | 'JH' | 'QH' | 'KH'
 
 export type RuleSet = {
-  AceHigh: boolean
+  AceHigh: boolean,
   PictureCardValue: number
 }
 

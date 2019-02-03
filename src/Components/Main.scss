@@ -22,44 +22,45 @@ $color-grey: #999;
 $color-yellow: #f7e04c;
 
 ul li{
-  list-style:none;
+  list-style: none;
 }
 
 button.button{
-  margin:0.1rem;
-  margin-bottom:1rem;
+  margin: 0.1rem;
+  margin-bottom: 1rem;
 }
 
 #hero{
-  background:$color-dark-grey;
+  background: $color-dark-grey;
   color: $color-yellow;
 }
 
-#house{
- margin-bottom:20px;
+section{
+ margin-bottom: 1rem;
 }
 
 #players{
-  padding:2rem 0;
-  background:#999;
+  padding: 2rem 0;
+  background: $color-grey;
 }
 
-#player1{
-  border:0.1rem solid $color-black;
-  border-radius:1rem;
-  background: $color-white
+.player{
+  border: 0.1rem solid; 
+  border-radius: 1rem;
+  background: $color-white  
 }
 
-#player2{
+#p1{
+  color: $color-black;
+  border-color: $color-black;
+}
+
+#p2{
   color: $color-red;
-  border:0.1rem solid $color-red;
-  border-radius:1rem;
-  background: $color-white;
+  border-color: $color-red;
 }
  
 .card{
-  padding:1rem;
-  border:0;
+  padding: 1rem;
+  border: 0;
 }
-
-
