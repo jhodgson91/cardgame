@@ -5,8 +5,8 @@ import * as api from "../api"
 
 //Define props types
 export interface Props {
-  key: any | false;
-  src: string | false;
+  key: string | undefined;
+  src: string | undefined;
 }
 
 export default class Card extends React.Component<Props> {
