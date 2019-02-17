@@ -30,35 +30,6 @@ it('should shuffle the pile', async () => {
   }
 })
 
-/*This is not needed until the function works
-it('should Draw specific cards', async () => {
-  if(deck) {
-    let pile = await deck.newPile("test");
-    expect(pile).toBeDefined()
-    let testCard = [];
-    let testCardData = [
-      {
-        image: 'https://deckofcardsapi.com/static/img/AC.png',
-        value: 'A',
-        suit: 'C',
-        code: 'AC'
-      },
-      {
-        image: 'https://deckofcardsapi.com/static/img/AD.png',
-        value: 'A',
-        suit: 'D',
-        code: 'AD'
-      }
-    ];
-    testCardData.forEach(i => {
-      testCard.push(new Card(i));
-    });
-    let result = await pile.drawSpecificCards(testCard);
-    expect(pile).toBe('');
-  }
-})
-*/
-
 it('should Create a pile with a list of cards', async () => {
     if (deck) {
         let cards = await deck.drawCards(10);
