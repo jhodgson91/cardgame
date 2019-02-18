@@ -2,6 +2,8 @@ import * as React from 'react';
 import * as enzyme from 'enzyme';
 import Game from './Game';
 
+//TODO: Swap mount for mocked APIs and test state updates correctly
+
 it('renders all children and game is initialised without the API', () => {
   const game = enzyme.shallow(<Game />);
   expect(game.find('Hero')).toHaveLength(1);

@@ -1,3 +1,5 @@
+//TODO: Finish off mock Deck class
+
 export const mockDeck = jest.fn();
 const mock = jest.fn().mockImplementation(() => {
   console.log('Mock Deck: cards drawn');

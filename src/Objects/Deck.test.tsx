@@ -4,6 +4,8 @@ import mockDeck from './Deck';
 
 var deck: Deck | undefined;
 
+//TODO: Finish off deck mocks and swap all API calls
+
 jest.mock('./Deck');
 
 beforeEach(() => {
