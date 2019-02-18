@@ -1,7 +1,15 @@
 import * as api from '../api';
 import Deck from './Deck';
+import mockDeck from './Deck';
 
 var deck: Deck | undefined;
+
+jest.mock('./Deck');
+
+beforeEach(() => {
+  Deck.mockClear();
+  mockDeck.mockClear();
+});
 
 beforeAll(async () => {
     deck = await api.getDeck({ shuffled: false });
