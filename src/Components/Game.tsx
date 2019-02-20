@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Hero from '../Components/Hero'
-import House from '../Components/House'
 import Card from '../Components/Card'
 import Player from '../Components/Player'
 import PlayerWrapper from '../Components/PlayerWrapper'
@@ -88,13 +87,20 @@ export default class Game extends React.Component<Props, State> {
     return (
       <div className="cell">
         <Hero title={this.state.isReady && this.state.deck.id}/>
-        <House title="House deck" cards={this.cardViews(house)}/>                               
+        <PlayerWrapper 
+          title="This is the house"
+          players={
+            <div className="grid-x grid-margin-x align-center text-center"> 
+              <Player title={house} readOnly={false} playCard={ () => {this.playCard(house)} } cards={this.cardViews(house)}/>
+            </div>
+          }
+        />
         <PlayerWrapper 
           title="These are players"
           players={
             <div className="grid-x grid-margin-x align-center text-center"> 
-              <Player title={p1} playCard={ () => {this.playCard(p1)} } cards={this.cardViews(p1)}/>
-              <Player title={p2} playCard={ () => {this.playCard(p2)} } cards={this.cardViews(p2)}/>
+              <Player title={p1} readOnly={true} playCard={ () => {this.playCard(p1)} } cards={this.cardViews(p1)}/>
+              <Player title={p2} readOnly={true} playCard={ () => {this.playCard(p2)} } cards={this.cardViews(p2)}/>
             </div>
           }
         />
