@@ -6,12 +6,12 @@ var deck: Deck | undefined;
 
 //TODO: Finish off deck mocks and swap all API calls
 
-jest.mock('./Deck');
+//jest.mock('./Deck');
 
-beforeEach(() => {
-  Deck.mockClear();
-  mockDeck.mockClear();
-});
+//beforeEach(() => {
+//  Deck.mockClear();
+//  mockDeck.mockClear();
+//});
 
 beforeAll(async () => {
     deck = await api.getDeck({ shuffled: false });
