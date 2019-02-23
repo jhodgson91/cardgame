@@ -1,5 +1,8 @@
 import * as api from '../api'
 
+
+//TODO: Remove CardIdentifier class
+
 export class CardIdentifier {
     code: api.CardCode
     valueCode: api.CardValueCode
