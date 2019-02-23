@@ -6,7 +6,8 @@ import * as api from "../api"
 //Define props types
 export interface Props {
   key: string | undefined;
-  src: string | undefined;
+  image: string | undefined;
+  data: any | undefined;
 }
 
 export default class Card extends React.Component<Props> {
@@ -18,7 +19,7 @@ export default class Card extends React.Component<Props> {
   render(): React.ReactNode {
     return (
       <div className="card small-4" key={this.props.key}>
-        <img className="card-img" src={this.props.src}/>
+        <img className="card-img" src={this.props.image}/>
       </div>
     );
   }

@@ -91,7 +91,7 @@ export default class Game extends React.Component<Props, State> {
           title="This is the house"
           players={
             <div className="grid-x grid-margin-x align-center text-center"> 
-              <Player title={house} readOnly={false} playCard={ () => {this.playCard(house)} } cards={this.cardViews(house)}/>
+              <Player title={house} readOnly={true} cards={this.cardViews(house)}/>
             </div>
           }
         />
@@ -99,8 +99,8 @@ export default class Game extends React.Component<Props, State> {
           title="These are players"
           players={
             <div className="grid-x grid-margin-x align-center text-center"> 
-              <Player title={p1} readOnly={true} playCard={ () => {this.playCard(p1)} } cards={this.cardViews(p1)}/>
-              <Player title={p2} readOnly={true} playCard={ () => {this.playCard(p2)} } cards={this.cardViews(p2)}/>
+              <Player title={p1} readOnly={false} playCard={ () => {this.playCard(p1)} } cards={this.cardViews(p1)}/>
+              <Player title={p2} readOnly={false} playCard={ () => {this.playCard(p2)} } cards={this.cardViews(p2)}/>
             </div>
           }
         />

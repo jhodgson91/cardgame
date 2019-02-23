@@ -8,6 +8,7 @@ var defaultRuleSet : RuleSet | undefined;
 var newRuleSet : RuleSet | undefined;
 
 beforeAll(async () => {
+  
   let aceData = {
     image: 'https://deckofcardsapi.com/static/img/AS.png',
     value: 'A',
@@ -42,7 +43,7 @@ beforeAll(async () => {
   aceCard = new Card(aceData);
   pictureCard = new Card(pictureData);
   regularCard = new Card(regularData);
-  console.log(aceCard);
+  
 })
 
 it('should be ace high', () => {

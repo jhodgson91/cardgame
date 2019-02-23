@@ -1,27 +1,5 @@
 import * as api from '../api'
 
-
-//TODO: Remove CardIdentifier class
-
-export class CardIdentifier {
-    code: api.CardCode
-    valueCode: api.CardValueCode
-    suitCode: api.CardSuitCode
-
-    constructor(code: api.CardCode) {
-        this.code = code;
-        this.valueCode = this.code[0] as api.CardValueCode
-        this.suitCode = this.code[1] as api.CardSuitCode
-    }
-    get suit(): api.CardSuit {
-        return api.CardSuitMap[this.suitCode]
-    }
-
-    get value(): api.CardValue {
-        return api.CardValueMap[this.valueCode]
-    }
-}
-
 export interface CardData {
     image: string,
     value: api.CardValue,
@@ -31,38 +9,45 @@ export interface CardData {
 
 class Card {
     _image: string
-    _identifier: CardIdentifier
+    _data: any
 
     constructor(data: CardData) {
         this._image = data.image
-        this._identifier = new CardIdentifier(data.code)
+        this._data = data 
     }
 
     valueOf() {
         return this.numericValue
     }
+  
     toString() {
         return `${this.value} OF ${this.suit}`
     }
+  
     get isPictureCard() {
         return this.value === api.CardValue.JACK
             || this.value === api.CardValue.QUEEN
             || this.value === api.CardValue.KING
     }
+    
     get image() {
         return this._image;
     }
+  
     get numericValue() {
         return api.getCardValue(this)
     }
+  
     get value() {
-        return this._identifier.value;
+        return api.CardValueMap[this._data.value];
     }
+  
     get suit() {
-        return this._identifier.suit;
+        return api.CardSuitMap[this._data.suit];
     }
+    
     get code() {
-        return this._identifier.code;
+        return this._data.code;
     }
 }
 

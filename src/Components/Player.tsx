@@ -18,7 +18,7 @@ export default class Player extends React.Component<Props> {
   }
   
   showButtons() {
-    if(this.props.readOnly!) {
+    if(!this.props.readOnly) {
       return (
         <div className="cell">
           <button className="button" onClick={this.props.playCard}>Play card</button>

@@ -6,7 +6,7 @@ var successCard : Card | undefined;
 var failCard : Card | undefined;
 
 //Setup test good and bad
-beforeAll(async () => {
+beforeAll(() => {
   let successData = {
     image: 'https://deckofcardsapi.com/static/img/AS.png',
     value: 'A',
@@ -42,4 +42,3 @@ it('should handle errors nicely', () => {
   expect(failCard.suit).toBe(undefined);
   expect(failCard.code).toBe('BA');
 })
-

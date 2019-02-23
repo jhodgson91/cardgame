@@ -1,6 +1,5 @@
 import axios from "axios";
 import Deck from "./Objects/Deck";
-
 import Card, { CardData } from "./Objects/Card"
 
 export type DrawFromType = 'top' | 'bottom'
