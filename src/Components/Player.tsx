@@ -29,7 +29,7 @@ export default class Player extends React.Component<Props> {
   
   render(): React.ReactNode {
     return (
-      <div id={this.props.title} className="cell small-6 player">
+      <div id={this.props.title} className="cell player">
         <div className="cell">
           <h3>{this.props.title}</h3>
         </div>

@@ -7,7 +7,6 @@ import * as api from "../api"
 export interface Props {
   key: string | undefined;
   image: string | undefined;
-  data: any | undefined;
 }
 
 export default class Card extends React.Component<Props> {

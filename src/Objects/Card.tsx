@@ -8,12 +8,18 @@ export interface CardData {
 }
 
 class Card {
-    _image: string
-    _data: any
+    data: CardData = {
+      image: '',
+      value: '',
+      suit: '',
+      code: ''
+    }
 
     constructor(data: CardData) {
         this._image = data.image
-        this._data = data 
+        this._value = data.value
+        this._suit = data.suit
+        this._code = data.code
     }
 
     valueOf() {
@@ -39,15 +45,15 @@ class Card {
     }
   
     get value() {
-        return api.CardValueMap[this._data.value];
+        return api.CardValueMap[this._value];
     }
   
     get suit() {
-        return api.CardSuitMap[this._data.suit];
+        return api.CardSuitMap[this._suit];
     }
     
     get code() {
-        return this._data.code;
+        return this._code;
     }
 }
 
