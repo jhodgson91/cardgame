@@ -44,7 +44,6 @@ export default class Game extends React.Component<Props, State> {
       let main = this.state.house;
       let card = await d.piles[player].drawCardFrom('top');
       await d.piles[main].add([card]);
-      
       this.setState({
         deck: d
       })
@@ -89,6 +88,7 @@ export default class Game extends React.Component<Props, State> {
         <Hero title={this.state.isReady && this.state.deck.id}/>
         <PlayerWrapper 
           title="This is the house"
+          grid="8"
           players={
             <div className="grid-x grid-margin-x align-center text-center"> 
               <Player title={house} readOnly={true} playCard={ () => {this.playCard(house)} } cards={this.cardViews(house)}/>
@@ -97,6 +97,7 @@ export default class Game extends React.Component<Props, State> {
         />
         <PlayerWrapper 
           title="These are players"
+          grid="12"
           players={
             <div className="grid-x grid-margin-x align-center text-center"> 
               <Player title={p1} readOnly={false} playCard={ () => {this.playCard(p1)} } cards={this.cardViews(p1)}/>
