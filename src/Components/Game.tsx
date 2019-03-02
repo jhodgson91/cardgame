@@ -55,7 +55,7 @@ export default class Game extends React.Component<Props, State> {
     if (this.state.isReady) {
       this.state.deck.piles[pile].cards.forEach(card => {
         view.push(
-          <Card key={card.code} image={card.image}/>
+          <Card data={card}/>
         )
       })
     }
