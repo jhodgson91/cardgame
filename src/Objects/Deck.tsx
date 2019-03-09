@@ -1,13 +1,12 @@
 import axios from 'axios'
-import Card from './Card'
 import Pile from './Pile'
 import * as api from '../api'
 
 type DeckData = {
     success: boolean,
     deck_id: string,
-    shuffled: boolean
-    remaining: number
+    shuffled: boolean,
+    remaining: number,
     piles: {
         [name: string]: Pile
     }
@@ -35,20 +34,13 @@ class Deck {
     // Returns an array of Card objects
     async drawCards(num: number = 1) {
         return axios.get(`${this.url}/draw/?count=${num}`)
-            .then(
-                response => {
-                    if(response.data.success) {
-                        this.data.remaining = response.data.remaining;
-                        var cards = new Array<Card>(response.data.cards.length);
-                        for (var i = 0; i < cards.length; i++) {
-                            cards[i] = new Card(response.data.cards[i]);
-                        }
-                        return cards;
-                    } else {
-                        return response.data;
-                    }
+            .then(response => {
+                if(response.data.success) { 
+                    return response.data.cards;
+                } else {
+                    return response.data;
                 }
-            )
+            })
             .catch(error => {
                 console.log(error.response);
                 return error;
@@ -57,25 +49,21 @@ class Deck {
 
     // Shuffles this deck
     async shuffle() {
-        return axios.get(`${this.url}/shuffle/`).then(
-            response => {
-                this.data.shuffled = response.data.shuffled
-            }
-        );
+        return axios.get(`${this.url}/shuffle/`).then(response => {
+            this.data.shuffled = response.data.shuffled
+        });
     }
 
     // Creates a new pile with an optional array of drawn cards
-    async newPile(name: string, cards: Card[] = []) {
+    async newPile(name: string, cards: Array<any> = []) {
         return axios.get(`${this.url}/pile/${name}/add/?cards=${api.getCardKeys(cards)}`)
-            .then(
-                response => {
-                    if (response.data.success) {
-                        let pile = new Pile(this.id, name, cards)
-                        this.data.piles[name] = pile
-                        return pile
-                    }
+            .then(response => {
+                if (response.data.success) {
+                    let pile = new Pile(this.id, name, cards)
+                    this.data.piles[name] = pile
+                    return pile
                 }
-            );
+            });
     }
 
     // Draws num number of cards from this deck and puts them in pile name

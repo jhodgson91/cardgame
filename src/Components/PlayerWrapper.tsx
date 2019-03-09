@@ -6,7 +6,7 @@ import * as api from "../api"
 //Define props types
 export interface Props {
   title: string | false;
-  players: any | false;
+  players: any;
   grid: string | false;
 }
 

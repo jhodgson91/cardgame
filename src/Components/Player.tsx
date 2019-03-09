@@ -8,7 +8,7 @@ export interface Props {
   title: string;
   readOnly: any | false;
   playCard: any | false;
-  cards: any[] | false;
+  cards: any | false;
 }
 
 export default class Player extends React.Component<Props> {

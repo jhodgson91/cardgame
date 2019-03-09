@@ -1,64 +1,36 @@
+import axios from "axios";
+import Deck from "./Objects/Deck";
 import * as api from './api';
-import Card from './Objects/Card';
 
-var aceCard : Card | undefined;
-var pictureCard : Card | undefined;
-var regularCard : Card | undefined;
-var defaultRuleSet : RuleSet | undefined;
-var newRuleSet : RuleSet | undefined;
+var deck: Deck | undefined;
+var cards: Array<any> = [
+      {
+          "image": "https://deckofcardsapi.com/static/img/KH.png",
+          "value": "KING",
+          "suit": "HEARTS",
+          "code": "KH"
+      },
+      {
+          "image": "https://deckofcardsapi.com/static/img/8C.png",
+          "value": "8",
+          "suit": "CLUBS",
+          "code": "8C"
+      }
+  ];
 
-beforeAll(async () => {
-  
-  let aceData = {
-    image: 'https://deckofcardsapi.com/static/img/AS.png',
-    value: 'A',
-    suit: 'S',
-    code: 'AS'
-  };
-  
-  let pictureData = {
-    image: '',
-    value: 'J',
-    suit: 'S',
-    code: 'JS'
-  };
-  
-  let regularData = {
-    image: '',
-    value: '7',
-    suit: 'S',
-    code: '7S'
-  };
-  
-  defaultRuleSet = {
-    AceHigh: true,
-    PictureCardValue: 10
-  };
-  
-  newRuleSet = {
-    AceHigh: false,
-    PictureCardValue: 12
-  };
-  
-  aceCard = new Card(aceData);
-  pictureCard = new Card(pictureData);
-  regularCard = new Card(regularData);
-  
+beforeEach(async () => {
+    deck = await api.getDeck();
+    expect(deck).toBeDefined();
 })
 
-it('should be ace high', () => {
-  expect(api.getCardValue(aceCard,defaultRuleSet)).toBe(11);
+it('returns a valid deck', () => {
+    expect(deck.data.success).toBeTruthy();
+    expect(deck.data.deck_id).toMatch(/([A-Za-z0-9]{12})/);
+    expect(deck.data.shuffled).toBeTruthy();
+    expect(deck.data.remaining).toBe(52);
+    expect(deck.data.piles).toMatchObject({});
 })
 
-it('should be ace low', () => {
-  expect(api.getCardValue(aceCard,newRuleSet)).toBe(1);
-})
-
-it('should match the rule value', () => {
-  expect(api.getCardValue(pictureCard,defaultRuleSet)).toBe(10);
-  expect(api.getCardValue(pictureCard,newRuleSet)).toBe(12);
-})
-
-it('should match the value of the regular card', () => {
-  expect(api.getCardValue(regularCard,defaultRuleSet)).toBe(7);
+it('returns card keys', () => {
+    expect(api.getCardKeys(cards)).toBe('KH,8C');
 })
