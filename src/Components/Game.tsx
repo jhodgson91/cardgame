@@ -12,16 +12,21 @@ export interface Props {
 
 }
 
+interface PlayerThing {
+    name: string,
+    readOnly: boolean
+}
+
 //Define state types
 interface State {
-    isReady : boolean;
-    deck : Deck;
-    cardInit : number;
-    players : any;
+    isReady: boolean;
+    deck: Deck;
+    cardInit: number;
+    players: PlayerThing[];
 }
 
 export default class Game extends React.Component<Props, State> {
-  
+
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -29,52 +34,43 @@ export default class Game extends React.Component<Props, State> {
             deck: new Deck(),
             cardInit: 26,
             players: [
-                {name: 'house', readOnly: true},
-                {name: 'p1', readOnly: false},
-                {name: 'p2', readOnly: false}
+                { name: 'house', readOnly: true },
+                { name: 'p1', readOnly: false },
+                { name: 'p2', readOnly: false }
             ]
         };
         this.playCard = this.playCard.bind(this);
         this.getCards = this.getCards.bind(this);
         this.getPlayers = this.getPlayers.bind(this);
     }
-    
-    async getPlayers(players: any) {
+
+    getPlayers() {
         let playerList = this.state.players
-        let showPlayers = await playerList
-            .filter(playerType => playerType.readOnly)
+        let showPlayers = playerList
+            //.filter(playerType => playerType.readOnly)
             .map(player => {
-                <Player 
-                    title={player.name} 
-                    key={player.name} 
-                    readOnly={player.readOnly} 
-                    playCard={() => {this.playCard(player.name)}} 
+                <Player
+                    title={player.name}
+                    key={player.name}
+                    readOnly={player.readOnly}
+                    playCard={() => { this.playCard(player.name) }}
                     cards={this.getCards(player.name)}
                 />
-             })
-        if(this.state.isReady) {
+            })
+        if (this.state.isReady) {
             return (
-                <div className="grid-x grid-margin-x align-center text-center"> 
+                <div className="grid-x grid-margin-x align-center text-center">
                     {showPlayers}
                 </div>
             )
         }
-    }  
-    
-    async getCards(playerName: string) {
-        let d = this.state.deck;
-        let listCards = await d.piles[playerName].list()
-        let cards = listCards 
-            .map((card) => {
-                <Card key={card.code} image={card.image} value={card.value} suit={card.suit} code={card.code}/>
-            })
-        if(this.state.isReady) {
-            return (
-                {cards}
-            )
-        }
     }
-  
+
+    getCards(playerName: string) {
+        let d = this.state.deck;
+        return d.piles[playerName].cards;
+    }
+
     async playCard(player: string) {
         if (this.state.isReady) {
             let d = this.state.deck;
@@ -85,8 +81,8 @@ export default class Game extends React.Component<Props, State> {
                 deck: d
             })
         }
-    } 
-  
+    }
+
     async componentDidMount() {
         let d = await api.getDeck()
         let house = this.state.players[0].name
@@ -105,27 +101,22 @@ export default class Game extends React.Component<Props, State> {
         }
     }
 
-  render(): React.ReactNode {
-    
-      const players = this.state.players;
+    render(): React.ReactNode {
+        let hero;
+        if (this.state.isReady) {
+            hero = <Hero title={this.state.deck.id} />
+        } else {
+            hero = <Hero title="Loading" />
+        }
 
-      return (
-          <div className="cell">
-              <Hero title={this.state.isReady && this.state.deck.id}/>
-              <PlayerWrapper 
-                  title="This is the house" 
-                  grid="8" 
-                  players={<Player 
-                            title={this.state.players[0].name} 
-                            key={this.state.players[0].name} 
-                            readOnly={this.state.players[0].readOnly} 
-                            playCard={() => {this.playCard(this.state.players[0].name)}} 
-                            cards={this.getCards(this.state.players[0].name)}
-                        />}
-              />
-              <PlayerWrapper title="These are players" grid="12" players={this.getPlayers(players)}/>
-          </div>
-      )
+        return (
+            <div className="cell">
+                {hero}
+                <PlayerWrapper title="These are players" grid={12} filter={() => true}>
+                    {this.getPlayers()}
+                </PlayerWrapper>
+
+            </div>
+        )
     }
 }
- 

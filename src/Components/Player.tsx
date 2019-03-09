@@ -1,24 +1,25 @@
 import React, { Component } from 'react';
 import './Main.scss'
+import Card from '../Components/Card'
 import Deck from '../Objects/Deck'
 import * as api from "../api"
 
 //Define props types
 export interface Props {
   title: string;
-  readOnly: any | false;
-  playCard: any | false;
-  cards: any | false;
+  readOnly: boolean;
+  playCard: () => void | undefined;
+  cards: Card[];
 }
 
 export default class Player extends React.Component<Props> {
-  
+
   constructor(props: Props) {
     super(props);
   }
-  
+
   showButtons() {
-    if(!this.props.readOnly) {
+    if (!this.props.readOnly) {
       return (
         <div className="cell">
           <button className="button" onClick={this.props.playCard}>Play card</button>
@@ -26,7 +27,7 @@ export default class Player extends React.Component<Props> {
       )
     }
   }
-  
+
   render(): React.ReactNode {
     return (
       <div id={this.props.title} className="cell auto player">
@@ -43,4 +44,3 @@ export default class Player extends React.Component<Props> {
     );
   }
 }
- 

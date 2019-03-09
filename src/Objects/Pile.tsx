@@ -1,19 +1,20 @@
 import axios from 'axios';
 import * as api from '../api';
+import Card from '../Components/Card'
 
 //TODO: Handle duplicates and existing cards for add and draw
 
 class Pile {
     deck_id: string = ""
     name: string = ""
-    cards: any[] = []
+    cards: Card[] = []
 
     constructor(deck_id: string, name: string, cards: any[]) {
         this.deck_id = deck_id
         this.name = name
         this.cards = cards
     }
-    
+
     //Update the list of cards for a pile and returns cards
     async list() {
         return axios.get(`${this.url}/list/`)
@@ -22,13 +23,13 @@ class Pile {
                 return this.cards
             })
     }
-    
+
     //Shuffle the cards in a pile and returns success
     async shuffle() {
         return axios.get(`${this.url}/shuffle/`)
             .then(response => response.data.success)
     }
-    
+
     //Add cards to a pile and updates cards
     async add(cards: any[] = []) {
         return axios.get(`${this.url}/add/?cards=${api.getCardKeys(cards)}/`)
@@ -36,14 +37,14 @@ class Pile {
                 this.cards = [...this.cards, ...cards]
             })
     }
-    
+
     //Draw a number of cards from a pile, removes them from the pile and returns filtered array
     async drawCards(num: number = 1) {
         return axios.get(`${this.url}/draw/?count=${num}`)
             .then(response => {
                 let drawnCards: any[] = response.data.cards
                 drawnCards.forEach(drawnCard => {
-                    let idx = this.cards.findIndex(localCard => localCard.code === drawnCard.code)
+                    let idx = this.cards.findIndex(localCard => localCard.props.code === drawnCard.props.code)
                     if (idx >= 0) {
                         this.cards.splice(idx, 1)
                     }
@@ -57,19 +58,19 @@ class Pile {
         return axios.get(`${this.url}/draw/${from}/`)
             .then(response => {
                 let drawnCard = response.data.cards[0]
-                let idx = this.cards.findIndex(card => drawnCard.code === card.code)
+                let idx = this.cards.findIndex(card => drawnCard.props.code === card.props.code)
                 if (idx >= 0) {
                     this.cards.splice(idx, 1)
                 }
                 return drawnCard
             })
     }
-    
+
     //Get remaining cards in a pile
     get remaining() {
         return this.cards.length;
     }
-  
+
     //Get base url for pile actions 
     get url() {
         return `${api.url}/deck/${this.deck_id}/pile/${this.name}`
