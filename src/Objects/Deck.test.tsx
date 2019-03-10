@@ -18,19 +18,6 @@ beforeAll(async () => {
     expect(deck).toBeDefined();
 })
 
-// Can we get a deck at all?
-it('should Create a deck', () => {
-    expect(deck).toBeDefined();
-    if (deck) {
-        expect(deck.id).toBeDefined();
-        expect(deck.remaining).toBe(52);
-        expect(deck.shuffled).toBe(false);
-        expect(deck.piles).toEqual({});
-        expect(deck.url).toBeDefined();
-    }
-
-});
-
 it('should Get an existing deck', async () => {
     if (deck) {
         let deckCopy = await api.getDeck({ deck_id: deck.id });
@@ -62,8 +49,8 @@ it('should error if too many cards are drawn', async () => {
 
 it('should Shuffle a deck', async () => {
     if (deck) {
-        expect(deck.shuffled).toBe(false);
+        expect(deck.shuffled).toBeFalsy();
         await deck.shuffle();
-        expect(deck.shuffled).toBe(true);
+        expect(deck.shuffled).toBeTruthy();
     }
 });

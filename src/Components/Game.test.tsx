@@ -17,7 +17,7 @@ it('renders all children and game is initialised without the API', () => {
   const game = enzyme.shallow(<Game />);
   expect(game).toBeDefined();
   expect(game.find('Hero')).toHaveLength(1);
-  expect(game.find('PlayerWrapper')).toHaveLength(2);
+  expect(game.find('PlayerWrapper')).toHaveLength(1);
   expect(game.state().cardInit).toEqual(26);
   expect(game.state().players[0].name).toEqual('house');
   expect(game.state().players[1].name).toEqual('p1');

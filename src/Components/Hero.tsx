@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import './Main.scss'
-import Deck from '../Objects/Deck'
-import * as api from "../api"
 
 //Define props types
 export interface Props {

@@ -12,7 +12,7 @@ export interface Props {
 
 }
 
-interface PlayerThing {
+interface playerName {
     name: string,
     readOnly: boolean
 }
@@ -22,7 +22,7 @@ interface State {
     isReady: boolean;
     deck: Deck;
     cardInit: number;
-    players: PlayerThing[];
+    players: playerName[];
 }
 
 export default class Game extends React.Component<Props, State> {
@@ -40,35 +40,6 @@ export default class Game extends React.Component<Props, State> {
             ]
         };
         this.playCard = this.playCard.bind(this);
-        this.getCards = this.getCards.bind(this);
-        this.getPlayers = this.getPlayers.bind(this);
-    }
-
-    getPlayers() {
-        let playerList = this.state.players
-        let showPlayers = playerList
-            //.filter(playerType => playerType.readOnly)
-            .map(player => {
-                <Player
-                    title={player.name}
-                    key={player.name}
-                    readOnly={player.readOnly}
-                    playCard={() => { this.playCard(player.name) }}
-                    cards={this.getCards(player.name)}
-                />
-            })
-        if (this.state.isReady) {
-            return (
-                <div className="grid-x grid-margin-x align-center text-center">
-                    {showPlayers}
-                </div>
-            )
-        }
-    }
-
-    getCards(playerName: string) {
-        let d = this.state.deck;
-        return d.piles[playerName].cards;
     }
 
     async playCard(player: string) {
@@ -102,20 +73,30 @@ export default class Game extends React.Component<Props, State> {
     }
 
     render(): React.ReactNode {
-        let hero;
+        //Only show the hero properly once the deck has loaded
+        
+        const players = this.state.players;
+        let hero: any = "";
+        let showPlayers: any = "";
         if (this.state.isReady) {
             hero = <Hero title={this.state.deck.id} />
+            showPlayers = players.map(p => 
+                      <Player title={p.name} key={p.name.toString()} readOnly={p.readOnly} playCard={() => { this.playCard(p.name) }}>
+                          {this.state.deck.piles[p.name].cards.map(c =>
+                              <Card key={c.code.toString()} image={c.image} value={c.value} suit={c.suit} code={c.code}/>
+                          )}
+                      </Player>
+                    )
         } else {
             hero = <Hero title="Loading" />
         }
-
+                                
         return (
             <div className="cell">
                 {hero}
-                <PlayerWrapper title="These are players" grid={12} filter={() => true}>
-                    {this.getPlayers()}
+                <PlayerWrapper title="These are players" grid={12}>
+                    {showPlayers}
                 </PlayerWrapper>
-
             </div>
         )
     }

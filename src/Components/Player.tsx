@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
 import './Main.scss'
-import Card from '../Components/Card'
-import Deck from '../Objects/Deck'
-import * as api from "../api"
 
 //Define props types
 export interface Props {
   title: string;
   readOnly: boolean;
   playCard: () => void | undefined;
-  cards: Card[];
 }
 
 export default class Player extends React.Component<Props> {
@@ -37,7 +33,7 @@ export default class Player extends React.Component<Props> {
         {this.showButtons()}
         <div className="grid-container">
           <div className="grid-x grid-padding-x small-12">
-            {this.props.cards}
+            {this.props.children}
           </div>
         </div>
       </div>

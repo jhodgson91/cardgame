@@ -2,35 +2,32 @@ import axios from "axios";
 import Deck from "./Objects/Deck";
 import * as api from './api';
 
-var deck: Deck | undefined;
-var cards: Array<any> = [
-      {
-          "image": "https://deckofcardsapi.com/static/img/KH.png",
-          "value": "KING",
-          "suit": "HEARTS",
-          "code": "KH"
-      },
-      {
-          "image": "https://deckofcardsapi.com/static/img/8C.png",
-          "value": "8",
-          "suit": "CLUBS",
-          "code": "8C"
-      }
-  ];
+var deckTrue: Deck | undefined;
+var deckFalse: Deck | undefined;
 
 beforeEach(async () => {
-    deck = await api.getDeck();
-    expect(deck).toBeDefined();
+    deckTrue = await api.getDeck();
+    deckFalse = await api.getDeck({ shuffled: false });
 })
 
-it('returns a valid deck', () => {
-    expect(deck.data.success).toBeTruthy();
-    expect(deck.data.deck_id).toMatch(/([A-Za-z0-9]{12})/);
-    expect(deck.data.shuffled).toBeTruthy();
-    expect(deck.data.remaining).toBe(52);
-    expect(deck.data.piles).toMatchObject({});
+it('returns a valid deck when shuffled', () => {
+    expect(deckTrue).toBeDefined();
+    expect(deckTrue.data.success).toBeTruthy();
+    expect(deckTrue.data.deck_id).toMatch(/([A-Za-z0-9]{12})/);
+    expect(deckTrue.id).toMatch(/([A-Za-z0-9]{12})/);
+    expect(deckTrue.data.shuffled).toBeTruthy();
+    expect(deckTrue.shuffled).toBeTruthy();
+    expect(deckTrue.data.remaining).toBe(52);
+    expect(deckTrue.remaining).toBe(52);
+    expect(deckTrue.data.piles).toMatchObject({});
+    expect(deckTrue.piles).toMatchObject({});
 })
 
-it('returns card keys', () => {
-    expect(api.getCardKeys(cards)).toBe('KH,8C');
+it('returns a valid deck when not shuffled', () => {
+    expect(deckFalse).toBeDefined();
+    expect(deckFalse.data.success).toBeTruthy();
+    expect(deckFalse.data.deck_id).toMatch(/([A-Za-z0-9]{12})/);
+    expect(deckFalse.data.shuffled).toBeFalsy();
+    expect(deckFalse.data.remaining).toBe(52);
+    expect(deckFalse.data.piles).toMatchObject({});
 })

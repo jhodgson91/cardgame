@@ -2,6 +2,13 @@ import axios from 'axios'
 import Pile from './Pile'
 import * as api from '../api'
 
+interface Card {
+    image: string,
+    value: string,
+    suit: string,
+    code: string
+}
+
 type DeckData = {
     success: boolean,
     deck_id: string,
@@ -55,8 +62,8 @@ class Deck {
     }
 
     // Creates a new pile with an optional array of drawn cards
-    async newPile(name: string, cards: Array<any> = []) {
-        return axios.get(`${this.url}/pile/${name}/add/?cards=${api.getCardKeys(cards)}`)
+    async newPile(name: string, cards: Card[] = []) {
+        return axios.get(`${this.url}/pile/${name}/add/?cards=${cards.map((card) => card.code).toString()}`)
             .then(response => {
                 if (response.data.success) {
                     let pile = new Pile(this.id, name, cards)

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './Main.scss'
-import Deck from '../Objects/Deck'
 
 //Define props types
 export interface Props {
@@ -16,16 +15,15 @@ export default class Card extends React.Component<Props> {
         super(props);
     }
 
-    toString() {
+    cardName() {
         return `${this.props.value} OF ${this.props.suit}`
     }
 
     render(): React.ReactNode {
-        console.log(this.props)
         return (
             <div className="card small-4">
                 <img className="card-img" src={this.props.image}/>
-                <p>{this.toString()}</p>
+                <p>{this.cardName()}</p>
             </div>
         );
     }

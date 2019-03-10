@@ -1,15 +1,21 @@
 import axios from 'axios';
 import * as api from '../api';
-import Card from '../Components/Card'
 
 //TODO: Handle duplicates and existing cards for add and draw
+
+interface Card {
+    image: string,
+    value: string,
+    suit: string,
+    code: string
+}
 
 class Pile {
     deck_id: string = ""
     name: string = ""
     cards: Card[] = []
 
-    constructor(deck_id: string, name: string, cards: any[]) {
+    constructor(deck_id: string, name: string, cards: Card[]) {
         this.deck_id = deck_id
         this.name = name
         this.cards = cards
@@ -31,8 +37,8 @@ class Pile {
     }
 
     //Add cards to a pile and updates cards
-    async add(cards: any[] = []) {
-        return axios.get(`${this.url}/add/?cards=${api.getCardKeys(cards)}/`)
+    async add(cards: Card[] = []) {
+        return axios.get(`${this.url}/add/?cards=${cards.map((card) => card.code).toString()}/`)
             .then(response => {
                 this.cards = [...this.cards, ...cards]
             })
@@ -42,9 +48,9 @@ class Pile {
     async drawCards(num: number = 1) {
         return axios.get(`${this.url}/draw/?count=${num}`)
             .then(response => {
-                let drawnCards: any[] = response.data.cards
+                let drawnCards: Card[] = response.data.cards
                 drawnCards.forEach(drawnCard => {
-                    let idx = this.cards.findIndex(localCard => localCard.props.code === drawnCard.props.code)
+                    let idx = this.cards.findIndex(localCard => localCard.code === drawnCard.code)
                     if (idx >= 0) {
                         this.cards.splice(idx, 1)
                     }
@@ -58,7 +64,7 @@ class Pile {
         return axios.get(`${this.url}/draw/${from}/`)
             .then(response => {
                 let drawnCard = response.data.cards[0]
-                let idx = this.cards.findIndex(card => drawnCard.props.code === card.props.code)
+                let idx = this.cards.findIndex(card => drawnCard.code === card.code)
                 if (idx >= 0) {
                     this.cards.splice(idx, 1)
                 }

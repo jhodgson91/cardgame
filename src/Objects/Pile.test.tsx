@@ -14,10 +14,13 @@ beforeEach(async () => {
     expect(deck).toBeDefined();
 })
 
-it('should Create a new pile', async () => {
+it('should Create a new pile with attributes defined', async () => {
     if (deck) {
         let pile = await deck.newPile("test");
         expect(pile).toBeDefined();
+        expect(pile.deck_id).toMatch(/([A-Za-z0-9]{12})/);
+        expect(pile.name).toBe("test");
+        expect(pile.cards).toBeDefined();
     }
 });
 
