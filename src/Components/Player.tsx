@@ -17,7 +17,7 @@ export default class Player extends React.Component<Props> {
   showButtons() {
     if (!this.props.readOnly) {
       return (
-        <div className="cell">
+        <div className="small-2">
           <button className="button" onClick={this.props.playCard}>Play card</button>
         </div>
       )
@@ -26,14 +26,16 @@ export default class Player extends React.Component<Props> {
 
   render(): React.ReactNode {
     return (
-      <div id={this.props.title} className="cell auto player">
-        <div className="cell">
+      <div className="grid-x grid-margin-x">
+        <div className="small-2 small-offset-1">
           <h3>{this.props.title}</h3>
         </div>
         {this.showButtons()}
-        <div className="grid-container">
-          <div className="grid-x grid-padding-x small-12">
-            {this.props.children}
+        <div id={this.props.title} className="cell player">
+          <div className="grid-container">
+            <div className="grid-x grid-padding-x">
+              {this.props.children}
+            </div>
           </div>
         </div>
       </div>

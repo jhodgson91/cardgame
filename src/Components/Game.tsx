@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import Hero from '../Components/Hero'
-import Card from '../Components/Card'
-import Player from '../Components/Player'
-import PlayerWrapper from '../Components/PlayerWrapper'
-import './Main.scss'
-import Deck from '../Objects/Deck'
-import * as api from "../api"
+import './Main.scss';
+import Deck from '../Objects/Deck';
+import * as api from '../api';
+import Hero from '../Components/Hero';
+import PlayerWrapper from '../Components/PlayerWrapper';
+import Player from '../Components/Player';
+import Card from '../Components/Card';
 
 //Define props types
 export interface Props {
@@ -21,6 +21,7 @@ interface playerName {
 interface State {
     isReady: boolean;
     deck: Deck;
+    drawFrom: 'top' | 'bottom';
     cardInit: number;
     players: playerName[];
 }
@@ -32,6 +33,7 @@ export default class Game extends React.Component<Props, State> {
         this.state = {
             isReady: false,
             deck: new Deck(),
+            drawFrom: 'top',
             cardInit: 26,
             players: [
                 { name: 'house', readOnly: true },
@@ -40,30 +42,64 @@ export default class Game extends React.Component<Props, State> {
             ]
         };
         this.playCard = this.playCard.bind(this);
+        this.showHand = this.showHand.bind(this);
     }
 
     async playCard(player: string) {
         if (this.state.isReady) {
             let d = this.state.deck;
-            let main = this.state.players[0].name;
-            let card = await d.piles[player].drawCardFrom('top');
-            await d.piles[main].add([card]);
+            let p = this.state.players;
+            let loc = this.state.drawFrom;
+            let card = await d.piles[player].drawCardFrom(loc);
+            await d.piles[p[0].name].add([card]);
             this.setState({
                 deck: d
             })
+            let snapDeck = d.piles[p[0].name].cards;
+            let last = snapDeck.length - 1;
+            if(typeof snapDeck[last - 1] !== 'undefined') {
+                if(snapDeck[last].value === snapDeck[last - 1].value) {
+                    window.alert("SNAP");
+                }
+            }
         }
     }
-
+    
+  /*
+    getCards(playerName: string) {
+        let d = this.state.deck;
+        d.piles[playerName].cards.map(c =>
+            <Card key={c.code.toString()} image={c.image} value={c.value} suit={c.suit} code={c.code}/>
+        )
+    }
+    */
+  
+    showHand(typeOfPlayer: boolean) {
+        let p = this.state.players;
+        let d = this.state.deck;
+        if (this.state.isReady) {  
+            let hand = p
+                .filter(i => i.readOnly === typeOfPlayer)
+                .map(i => 
+                    <Player title={i.name} key={i.name.toString()} readOnly={i.readOnly} playCard={() => { this.playCard(i.name) }}>
+                        {d.piles[i.name].cards.map(c =>
+                            <Card key={c.code.toString()} image={c.image} value={c.value} suit={c.suit} code={c.code}/>
+                        )}
+                    </Player>
+                )
+            return hand;
+        }
+    }
+  
     async componentDidMount() {
-        let d = await api.getDeck()
-        let house = this.state.players[0].name
-        let p1 = this.state.players[1].name
-        let p2 = this.state.players[2].name
+        let d = await api.getDeck();
+        let p = this.state.players;
+        let num = this.state.cardInit;
         if (d) {
             Promise.all([
-                await d.newPile(house),
-                await d.drawIntoPile(p1, this.state.cardInit),
-                await d.drawIntoPile(p2, this.state.cardInit)
+                await d.newPile(p[0].name),
+                await d.drawIntoPile(p[1].name, num),
+                await d.drawIntoPile(p[2].name, num)
             ])
             this.setState({
                 isReady: true,
@@ -73,29 +109,23 @@ export default class Game extends React.Component<Props, State> {
     }
 
     render(): React.ReactNode {
-        //Only show the hero properly once the deck has loaded
         
-        const players = this.state.players;
-        let hero: any = "";
-        let showPlayers: any = "";
-        if (this.state.isReady) {
-            hero = <Hero title={this.state.deck.id} />
-            showPlayers = players.map(p => 
-                      <Player title={p.name} key={p.name.toString()} readOnly={p.readOnly} playCard={() => { this.playCard(p.name) }}>
-                          {this.state.deck.piles[p.name].cards.map(c =>
-                              <Card key={c.code.toString()} image={c.image} value={c.value} suit={c.suit} code={c.code}/>
-                          )}
-                      </Player>
-                    )
-        } else {
-            hero = <Hero title="Loading" />
-        }
-                                
+        const isReady: boolean = this.state.isReady;
+        const ID: string = this.state.deck.id;
+        const loadingText: string = "Loading...";
+        const smallWidth: number = 6;
+        const largeWidth: number = 12;
+        const RO: boolean = true;
+        const W: boolean = false;
+                       
         return (
             <div className="cell">
-                {hero}
-                <PlayerWrapper title="These are players" grid={12}>
-                    {showPlayers}
+                {isReady ? <Hero title={ID}/> : <Hero title={loadingText}/>}
+                <PlayerWrapper title="This is the house" grid={largeWidth}>
+                    {this.showHand(RO)}
+                </PlayerWrapper>
+                <PlayerWrapper title="These are players" grid={largeWidth}>
+                    {this.showHand(W)}
                 </PlayerWrapper>
             </div>
         )

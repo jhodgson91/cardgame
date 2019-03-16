@@ -21,9 +21,8 @@ export default class Card extends React.Component<Props> {
 
     render(): React.ReactNode {
         return (
-            <div className="card small-4">
+            <div className="card small-1">
                 <img className="card-img" src={this.props.image}/>
-                <p>{this.cardName()}</p>
             </div>
         );
     }

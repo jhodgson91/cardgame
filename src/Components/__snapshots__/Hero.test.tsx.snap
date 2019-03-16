@@ -8,7 +8,7 @@ exports[`renders the same as last time with a button 1`] = `
     className="grid-container"
   >
     <div
-      className="grid-x grid-padding-x align-center text-center"
+      className="grid-x grid-padding-x text-center"
     >
       <div
         className="small-12"

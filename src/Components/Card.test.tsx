@@ -47,7 +47,6 @@ it('renders with an image, a key and text', () => {
     );
     expect(card).toBeDefined();
     expect(card.find('img').prop('src')).toBe('https://deckofcardsapi.com/static/img/KH.png');
-    expect(card.find('p').text()).toBe('KING OF HEARTS');
 });
 
 it('renders several cards with an array', () => {

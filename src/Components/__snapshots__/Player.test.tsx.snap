@@ -1,57 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders the same as last time 1`] = `
-<div
-  className="cell auto player"
-  id="house"
->
-  <div
-    className="cell"
-  >
-    <h3>
-      house
-    </h3>
-  </div>
-  <div
-    className="cell"
-  >
-    <button
-      className="button"
-      onClick={[Function]}
-    >
-      Play card
-    </button>
-  </div>
-  <div
-    className="grid-container"
-  >
-    <div
-      className="grid-x grid-padding-x small-12"
-    >
-      <div
-        id="test"
-      >
-        Text
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
 exports[`renders the same as last time with a button 1`] = `
 <div
-  className="cell auto player"
-  id="house"
+  className="grid-x grid-margin-x"
 >
   <div
-    className="cell"
+    className="small-2 small-offset-1"
   >
     <h3>
       house
     </h3>
   </div>
   <div
-    className="cell"
+    className="small-2"
   >
     <button
       className="button"
@@ -61,15 +22,20 @@ exports[`renders the same as last time with a button 1`] = `
     </button>
   </div>
   <div
-    className="grid-container"
+    className="cell player"
+    id="house"
   >
     <div
-      className="grid-x grid-padding-x small-12"
+      className="grid-container"
     >
       <div
-        id="test"
+        className="grid-x grid-padding-x"
       >
-        Text
+        <div
+          id="test"
+        >
+          Text
+        </div>
       </div>
     </div>
   </div>
@@ -78,26 +44,30 @@ exports[`renders the same as last time with a button 1`] = `
 
 exports[`renders the same as last time without a button 1`] = `
 <div
-  className="cell auto player"
-  id="house"
+  className="grid-x grid-margin-x"
 >
   <div
-    className="cell"
+    className="small-2 small-offset-1"
   >
     <h3>
       house
     </h3>
   </div>
   <div
-    className="grid-container"
+    className="cell player"
+    id="house"
   >
     <div
-      className="grid-x grid-padding-x small-12"
+      className="grid-container"
     >
       <div
-        id="test"
+        className="grid-x grid-padding-x"
       >
-        Text
+        <div
+          id="test"
+        >
+          Text
+        </div>
       </div>
     </div>
   </div>
