@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders the same as last time 1`] = `
+<div
+  className="cell"
+>
+  <section
+    id="hero"
+  >
+    <div
+      className="grid-container"
+    >
+      <div
+        className="grid-x grid-padding-x text-center"
+      >
+        <div
+          className="small-12"
+        >
+          <h1>
+            Card game - 
+            Loading...
+          </h1>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section
+    id="players"
+  >
+    <div
+      className="grid-container"
+    >
+      <div
+        className="grid-x grid-padding-x align-center"
+      >
+        <div
+          className="cell small-12"
+        >
+          <h2>
+            This is the house
+          </h2>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section
+    id="players"
+  >
+    <div
+      className="grid-container"
+    >
+      <div
+        className="grid-x grid-padding-x align-center"
+      >
+        <div
+          className="cell small-12"
+        >
+          <h2>
+            These are players
+          </h2>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+`;
