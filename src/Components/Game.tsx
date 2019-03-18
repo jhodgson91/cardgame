@@ -43,6 +43,7 @@ export default class Game extends React.Component<Props, State> {
         };
         this.playCard = this.playCard.bind(this);
         this.showHand = this.showHand.bind(this);
+        this.getCards = this.getCards.bind(this);
     }
 
     async playCard(player: string) {
@@ -51,10 +52,12 @@ export default class Game extends React.Component<Props, State> {
             let p = this.state.players;
             let loc = this.state.drawFrom;
             let card = await d.piles[player].drawCardFrom(loc);
+            //Move a card to the central deck
             await d.piles[p[0].name].add([card]);
             this.setState({
                 deck: d
             })
+            //Check snap rules
             let snapDeck = d.piles[p[0].name].cards;
             let last = snapDeck.length - 1;
             if(typeof snapDeck[last - 1] !== 'undefined') {
@@ -64,15 +67,17 @@ export default class Game extends React.Component<Props, State> {
             }
         }
     }
-    
-  /*
-    getCards(playerName: string) {
+  
+    getCards(player: string) {
         let d = this.state.deck;
-        d.piles[playerName].cards.map(c =>
-            <Card key={c.code.toString()} image={c.image} value={c.value} suit={c.suit} code={c.code}/>
-        )
+        if(this.state.isReady) {
+            let cards = d.piles[player].cards
+                .map(c =>
+                    <Card key={c.code.toString()} image={c.image} value={c.value} suit={c.suit} code={c.code}/>
+                );
+            return cards;
+        }
     }
-    */
   
     showHand(typeOfPlayer: boolean) {
         let p = this.state.players;
@@ -82,11 +87,9 @@ export default class Game extends React.Component<Props, State> {
                 .filter(i => i.readOnly === typeOfPlayer)
                 .map(i => 
                     <Player title={i.name} key={i.name.toString()} readOnly={i.readOnly} playCard={() => { this.playCard(i.name) }}>
-                        {d.piles[i.name].cards.map(c =>
-                            <Card key={c.code.toString()} image={c.image} value={c.value} suit={c.suit} code={c.code}/>
-                        )}
+                        {this.getCards(i.name)}
                     </Player>
-                )
+                );
             return hand;
         }
     }
@@ -96,15 +99,17 @@ export default class Game extends React.Component<Props, State> {
         let p = this.state.players;
         let num = this.state.cardInit;
         if (d) {
+            //Call services to initiate game
             Promise.all([
                 await d.newPile(p[0].name),
                 await d.drawIntoPile(p[1].name, num),
                 await d.drawIntoPile(p[2].name, num)
-            ])
+            ]);
+            //Update state so game starts
             this.setState({
                 isReady: true,
                 deck: d
-            })
+            });
         }
     }
 

@@ -15,10 +15,6 @@ export default class Card extends React.Component<Props> {
         super(props);
     }
 
-    cardName() {
-        return `${this.props.value} OF ${this.props.suit}`
-    }
-
     render(): React.ReactNode {
         return (
             <div className="card small-1">
