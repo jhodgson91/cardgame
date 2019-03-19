@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import './Main.scss';
 import Deck from '../Objects/Deck';
 import * as api from '../api';
-import Hero from '../Components/Hero';
-import PlayerWrapper from '../Components/PlayerWrapper';
-import Player from '../Components/Player';
-import Card from '../Components/Card';
+import Hero from './Hero';
+import PlayerWrapper from './PlayerWrapper';
+import Player from './Player';
+import Card from './Card';
 
 //Define props types
 export interface Props {
@@ -14,7 +14,8 @@ export interface Props {
 
 interface playerName {
     name: string,
-    readOnly: boolean
+    readOnly: boolean,
+    theme: string
 }
 
 //Define state types
@@ -36,9 +37,9 @@ export default class Game extends React.Component<Props, State> {
             drawFrom: 'top',
             cardInit: 26,
             players: [
-                { name: 'house', readOnly: true },
-                { name: 'p1', readOnly: false },
-                { name: 'p2', readOnly: false }
+                { name: 'house', readOnly: true, theme: "house" },
+                { name: 'p1', readOnly: false, theme: "p1" },
+                { name: 'p2', readOnly: false, theme: "p2" }
             ]
         };
         this.playCard = this.playCard.bind(this);
@@ -73,7 +74,13 @@ export default class Game extends React.Component<Props, State> {
         if(this.state.isReady) {
             let cards = d.piles[player].cards
                 .map(c =>
-                    <Card key={c.code.toString()} image={c.image} value={c.value} suit={c.suit} code={c.code}/>
+                    <Card 
+                        key={c.code.toString()} 
+                        image={c.image} 
+                        value={c.value} 
+                        suit={c.suit} 
+                        code={c.code}
+                    />
                 );
             return cards;
         }
@@ -86,7 +93,13 @@ export default class Game extends React.Component<Props, State> {
             let hand = p
                 .filter(i => i.readOnly === typeOfPlayer)
                 .map(i => 
-                    <Player title={i.name} key={i.name.toString()} readOnly={i.readOnly} playCard={() => { this.playCard(i.name) }}>
+                    <Player 
+                        title={i.name} 
+                        key={i.name.toString()} 
+                        readOnly={i.readOnly} 
+                        theme={i.theme} 
+                        playCard={() => { this.playCard(i.name) }}
+                    >
                         {this.getCards(i.name)}
                     </Player>
                 );

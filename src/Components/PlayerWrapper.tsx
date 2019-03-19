@@ -16,7 +16,7 @@ export default class PlayerWrapper extends React.Component<Props> {
   render(): React.ReactNode {
     // This wants to use the props.children thing we found to render its contents
     return (
-      <section id="players">
+      <section className="players">
         <div className="grid-container">
           <div className="grid-x grid-padding-x align-center">
             <div className={`cell small-${this.props.grid}`}>
