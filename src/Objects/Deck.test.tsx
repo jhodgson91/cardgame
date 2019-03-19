@@ -1,25 +1,22 @@
 import * as api from '../api';
 import Deck from './Deck';
+import mockDeck from './Deck';
 
 var deck: Deck | undefined;
+
+//TODO: Finish off deck mocks and swap all API calls
+
+//jest.mock('./Deck');
+
+//beforeEach(() => {
+//  Deck.mockClear();
+//  mockDeck.mockClear();
+//});
 
 beforeAll(async () => {
     deck = await api.getDeck({ shuffled: false });
     expect(deck).toBeDefined();
 })
-
-// Can we get a deck at all?
-it('should Create a deck', () => {
-    expect(deck).toBeDefined();
-    if (deck) {
-        expect(deck.id).toBeDefined();
-        expect(deck.remaining).toBe(52);
-        expect(deck.shuffled).toBe(false);
-        expect(deck.piles).toEqual({});
-        expect(deck.url).toBeDefined();
-    }
-
-});
 
 it('should Get an existing deck', async () => {
     if (deck) {
@@ -52,8 +49,8 @@ it('should error if too many cards are drawn', async () => {
 
 it('should Shuffle a deck', async () => {
     if (deck) {
-        expect(deck.shuffled).toBe(false);
+        expect(deck.shuffled).toBeFalsy();
         await deck.shuffle();
-        expect(deck.shuffled).toBe(true);
+        expect(deck.shuffled).toBeTruthy();
     }
 });

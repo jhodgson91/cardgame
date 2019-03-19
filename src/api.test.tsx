@@ -1,63 +1,33 @@
+import axios from "axios";
+import Deck from "./Objects/Deck";
 import * as api from './api';
-import Card from './Objects/Card';
 
-var aceCard : Card | undefined;
-var pictureCard : Card | undefined;
-var regularCard : Card | undefined;
-var defaultRuleSet : RuleSet | undefined;
-var newRuleSet : RuleSet | undefined;
+var deckTrue: Deck | undefined;
+var deckFalse: Deck | undefined;
 
-beforeAll(async () => {
-  let aceData = {
-    image: 'https://deckofcardsapi.com/static/img/AS.png',
-    value: 'A',
-    suit: 'S',
-    code: 'AS'
-  };
-  
-  let pictureData = {
-    image: '',
-    value: 'J',
-    suit: 'S',
-    code: 'JS'
-  };
-  
-  let regularData = {
-    image: '',
-    value: '7',
-    suit: 'S',
-    code: '7S'
-  };
-  
-  defaultRuleSet = {
-    AceHigh: true,
-    PictureCardValue: 10
-  };
-  
-  newRuleSet = {
-    AceHigh: false,
-    PictureCardValue: 12
-  };
-  
-  aceCard = new Card(aceData);
-  pictureCard = new Card(pictureData);
-  regularCard = new Card(regularData);
-  console.log(aceCard);
+beforeEach(async () => {
+    deckTrue = await api.getDeck();
+    deckFalse = await api.getDeck({ shuffled: false });
 })
 
-it('should be ace high', () => {
-  expect(api.getCardValue(aceCard,defaultRuleSet)).toBe(11);
+it('returns a valid deck when shuffled', () => {
+    expect(deckTrue).toBeDefined();
+    expect(deckTrue.data.success).toBeTruthy();
+    expect(deckTrue.data.deck_id).toMatch(/([A-Za-z0-9]{12})/);
+    expect(deckTrue.id).toMatch(/([A-Za-z0-9]{12})/);
+    expect(deckTrue.data.shuffled).toBeTruthy();
+    expect(deckTrue.shuffled).toBeTruthy();
+    expect(deckTrue.data.remaining).toBe(52);
+    expect(deckTrue.remaining).toBe(52);
+    expect(deckTrue.data.piles).toMatchObject({});
+    expect(deckTrue.piles).toMatchObject({});
 })
 
-it('should be ace low', () => {
-  expect(api.getCardValue(aceCard,newRuleSet)).toBe(1);
-})
-
-it('should match the rule value', () => {
-  expect(api.getCardValue(pictureCard,defaultRuleSet)).toBe(10);
-  expect(api.getCardValue(pictureCard,newRuleSet)).toBe(12);
-})
-
-it('should match the value of the regular card', () => {
-  expect(api.getCardValue(regularCard,defaultRuleSet)).toBe(7);
+it('returns a valid deck when not shuffled', () => {
+    expect(deckFalse).toBeDefined();
+    expect(deckFalse.data.success).toBeTruthy();
+    expect(deckFalse.data.deck_id).toMatch(/([A-Za-z0-9]{12})/);
+    expect(deckFalse.data.shuffled).toBeFalsy();
+    expect(deckFalse.data.remaining).toBe(52);
+    expect(deckFalse.data.piles).toMatchObject({});
 })

@@ -13,45 +13,54 @@
 @include foundation-card;
 @include foundation-button;
 
+//Variables for colours to be updated when there is a palette
+$color-red: darkred;
+$color-black: black;
+$color-white: white;
+$color-dark-grey: #2d2d2d;
+$color-grey: #999;
+$color-yellow: #f7e04c;
+
 ul li{
-  list-style:none;
+  list-style: none;
 }
 
 button.button{
-  margin:0.1rem;
-  margin-bottom:1rem;
+  margin: 0.1rem;
+  margin-bottom: 1rem;
 }
 
 #hero{
-  background:#2d2d2d;
-  color: #f7e04c;
+  background: $color-dark-grey;
+  color: $color-yellow;
 }
 
-#deck{
- margin-bottom:20px;
+section{
+ margin-bottom: 1rem;
 }
 
 #players{
-  padding:2rem 0;
-  background:#999;
+  padding: 2rem 0;
+  background: $color-grey;
 }
 
-#player{
-  border:0.1rem solid black;
-  border-radius:1rem;
-  background:white;
+.player{
+  border: 0.1rem solid; 
+  border-radius: 1rem;
+  background: $color-white  
 }
 
-#ai{
-  color:darkred;
-  border:0.1rem solid darkred;
-  border-radius:1rem;
-  background:white;
+#p1{
+  color: $color-black;
+  border-color: $color-black;
+}
+
+#p2{
+  color: $color-red;
+  border-color: $color-red;
 }
  
 .card{
-  padding:1rem;
-  border:0;
+  padding: 1rem;
+  border: 0;
 }
-
-

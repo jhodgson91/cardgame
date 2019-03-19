@@ -14,10 +14,13 @@ beforeEach(async () => {
     expect(deck).toBeDefined();
 })
 
-it('should Create a new pile', async () => {
+it('should Create a new pile with attributes defined', async () => {
     if (deck) {
         let pile = await deck.newPile("test");
         expect(pile).toBeDefined();
+        expect(pile.deck_id).toMatch(/([A-Za-z0-9]{12})/);
+        expect(pile.name).toBe("test");
+        expect(pile.cards).toBeDefined();
     }
 });
 
@@ -29,35 +32,6 @@ it('should shuffle the pile', async () => {
     expect(result).toBe(true);
   }
 })
-
-/*This is not needed until the function works
-it('should Draw specific cards', async () => {
-  if(deck) {
-    let pile = await deck.newPile("test");
-    expect(pile).toBeDefined()
-    let testCard = [];
-    let testCardData = [
-      {
-        image: 'https://deckofcardsapi.com/static/img/AC.png',
-        value: 'A',
-        suit: 'C',
-        code: 'AC'
-      },
-      {
-        image: 'https://deckofcardsapi.com/static/img/AD.png',
-        value: 'A',
-        suit: 'D',
-        code: 'AD'
-      }
-    ];
-    testCardData.forEach(i => {
-      testCard.push(new Card(i));
-    });
-    let result = await pile.drawSpecificCards(testCard);
-    expect(pile).toBe('');
-  }
-})
-*/
 
 it('should Create a pile with a list of cards', async () => {
     if (deck) {

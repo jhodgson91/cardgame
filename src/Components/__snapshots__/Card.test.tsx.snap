@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders the same as last time 1`] = `
+<div
+  className="card small-4"
+>
+  <img
+    className="card-img"
+    src="https://deckofcardsapi.com/static/img/KH.png"
+  />
+  <p>
+    KING OF HEARTS
+  </p>
+</div>
+`;

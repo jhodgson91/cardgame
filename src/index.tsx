@@ -1,5 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import DrawCardDemo from './Components/DrawCardDemo'
+import Game from './Components/Game'
 
-ReactDOM.render(<DrawCardDemo />, document.getElementById('game'));
+ReactDOM.render(<Game />, document.getElementById('game'));
