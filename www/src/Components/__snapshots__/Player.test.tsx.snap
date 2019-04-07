@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders the same as last time with a button 1`] = `
+<div
+  className="grid-x grid-margin-x"
+>
+  <div
+    className="small-2 small-offset-1"
+  >
+    <h3>
+      house
+    </h3>
+  </div>
+  <div
+    className="small-2"
+  >
+    <button
+      className="button"
+      onClick={[MockFunction]}
+    >
+      Play card
+    </button>
+  </div>
+  <div
+    className="cell player"
+    id="house"
+  >
+    <div
+      className="grid-container"
+    >
+      <div
+        className="grid-x grid-padding-x"
+      >
+        <div
+          id="test"
+        >
+          Text
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`renders the same as last time without a button 1`] = `
+<div
+  className="grid-x grid-margin-x"
+>
+  <div
+    className="small-2 small-offset-1"
+  >
+    <h3>
+      house
+    </h3>
+  </div>
+  <div
+    className="cell player"
+    id="house"
+  >
+    <div
+      className="grid-container"
+    >
+      <div
+        className="grid-x grid-padding-x"
+      >
+        <div
+          id="test"
+        >
+          Text
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

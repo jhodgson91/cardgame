@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "outDir": "../release/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "target": "es6",
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true,
+    "lib": [
+      "es2016",
+      "es6",
+      "dom"
+    ]
+  },
+  "include": [
+    "src"
+  ]
+}

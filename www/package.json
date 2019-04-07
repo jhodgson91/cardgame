@@ -1,0 +1,46 @@
+{
+  "name": "cardgame-new",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node_modules/.bin/webpack --config webpack.config.js --mode production"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/enzyme": "^3.9.1",
+    "@types/enzyme-adapter-react-16": "^1.0.5",
+    "@types/react": "^16.8.12",
+    "@types/react-dom": "^16.8.3",
+    "@types/react-test-renderer": "^16.8.1",
+    "axios": "^0.18.0",
+    "enzyme": "^3.9.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-test-renderer": "^16.8.6"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/preset-react": "^7.0.0",
+    "@types/jest": "^24.0.11",
+    "babel-loader": "^8.0.5",
+    "css-loader": "^2.1.1",
+    "enzyme-adapter-react-16": "^1.12.1",
+    "foundation-sites": "^6.5.3",
+    "html-webpack-plugin": "^3.2.0",
+    "jest": "^24.7.1",
+    "node-sass": "^4.11.0",
+    "sass": "^1.17.4",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "ts-jest": "^24.0.2",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.4.2",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0"
+  }
+}
