@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as enzyme from 'enzyme';
-import renderer from 'react-test-renderer';
+import * as renderer from 'react-test-renderer';
 import PlayerWrapper from './PlayerWrapper';
 
 it('renders the same as last time', () => {

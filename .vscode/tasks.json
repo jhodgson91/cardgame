@@ -4,17 +4,66 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Start",
-            "type": "npm",
-            "script": "start",
-            "problemMatcher": [],
+            "label": "Build API",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}/api"
+            },
+            "command": [
+                "cargo"
+            ],
+            "args": [
+                "build",
+                "--release"
+            ]
+        },
+        {
+            "label": "Deploy API",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}/api"
+            },
+            "command": [
+                "./deploy.sh"
+            ],
+            "dependsOn": [
+                "Build API"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Frontend",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}/www"
+            },
+            "command": [
+                "npm"
+            ],
+            "args": [
+                "build"
+            ]
+        },
+        {
+            "label": "Run",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}/www",
+            },
+            "command": [
+                "npm"
+            ],
+            "args": [
+                "start"
+            ],
+            "dependsOn": [
+                "Deploy API",
+                "Build Frontend"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "runOptions": {
-                "runOn": "folderOpen"
-            }
         }
     ]
 }

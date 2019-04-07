@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as enzyme from 'enzyme';
-import renderer from 'react-test-renderer';
+import * as renderer from 'react-test-renderer';
 import Player from './Player';
 
 it('renders the same as last time with a button', () => {

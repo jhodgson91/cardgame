@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as enzyme from 'enzyme';
-import renderer from 'react-test-renderer';
+import * as renderer from 'react-test-renderer';
+import Adapter from 'enzyme-adapter-react-16';
 import Hero from './Hero';
 
 it('renders the same as last time with a button', () => {
