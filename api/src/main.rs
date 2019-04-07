@@ -33,9 +33,10 @@ fn main() {
         )
         .mount(
             "/api", 
-            routes![api::get_game,
-                api::get_pile,
+            routes![
                 api::new_game,
+                api::get_game,
+                api::get_pile,
                 api::draw_from_pile,
             ])
         .launch();
