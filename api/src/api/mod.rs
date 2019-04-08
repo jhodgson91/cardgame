@@ -1,15 +1,15 @@
-mod error;
 mod cards;
-mod routes;
+mod error;
 mod game;
-mod stringcode;
 mod models;
+mod routes;
+mod stringcode;
 
 use super::*;
 
-pub use error::*;
 pub use cards::*;
-pub use routes::*;
+pub use error::*;
 pub use game::*;
-pub use stringcode::*;
 pub use models::*;
+pub use routes::*;
+pub use stringcode::*;

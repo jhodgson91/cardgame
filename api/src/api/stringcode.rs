@@ -1,6 +1,12 @@
-use super::HasStringCode;
-
+use super::*;
 use serde::de::Visitor;
+
+pub trait HasStringCode {
+    fn from_str(s: String) -> Option<Self>
+    where
+        Self: std::marker::Sized;
+    fn to_str(&self) -> String;
+}
 
 pub struct CodeVisitor<T> {
     phantom: std::marker::PhantomData<T>,

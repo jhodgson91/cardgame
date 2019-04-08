@@ -2,10 +2,10 @@ use super::*;
 
 use serde::*;
 
-#[derive(Clone, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub struct Card {
-    pub suit: CardSuit,
-    pub value: CardValue,
+    pub(super) suit: CardSuit,
+    pub(super) value: CardValue,
 }
 
 impl std::fmt::Debug for Card {

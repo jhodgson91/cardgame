@@ -44,7 +44,8 @@
                 "panel": "shared",
                 "showReuseMessage": true,
                 "clear": true
-            }
+            },
+            "problemMatcher": []
         },
         {
             "label": "Build Frontend",
@@ -95,7 +96,8 @@
                 "panel": "shared",
                 "showReuseMessage": true,
                 "clear": true
-            }
+            },
+            "problemMatcher": []
         }
     ]
 }

@@ -27,6 +27,10 @@ impl Responder<'static> for CardAPIError {
                 .status(Status::raw(500))
                 .sized_body(Cursor::new(format!("Database Error: {}", e)))
                 .ok(),
+            CardAPIError::CardNotInCollection => Response::build()
+                .status(Status::raw(500))
+                .sized_body(Cursor::new(format!("Card not in collection!")))
+                .ok(),
             _ => Ok(Response::new()),
         }
     }

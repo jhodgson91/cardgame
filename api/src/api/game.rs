@@ -1,5 +1,5 @@
-use super::cards::*;
 use super::api::*;
+use super::cards::*;
 use super::models;
 
 use diesel::prelude::*;
@@ -12,13 +12,16 @@ use std::collections::HashMap;
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Game {
     id: String,
-    piles: HashMap<String, RefCell<CardCollection>>,
+    piles: HashMap<String, RefCell<Vec<Card>>>,
 }
 
 impl Game {
     pub fn new() -> Game {
         let mut piles = HashMap::new();
-        piles.insert(String::from("deck"), RefCell::new(CardCollection::from(CardSelection::All(true))));
+        piles.insert(
+            String::from("deck"),
+            RefCell::new(Vec::<Card>::from(CardSelection::All(true))),
+        );
 
         Game {
             id: Game::new_id(),
@@ -36,6 +39,7 @@ impl Game {
         to: &String,
         selection: &CardSelection,
     ) -> Result<(), CardAPIError> {
+        println!("{:?}", selection);
         let mut p1 = self
             .piles
             .get(from)
@@ -47,14 +51,14 @@ impl Game {
             .ok_or(CardAPIError::NotFound(format!("Pile: {}", to.clone())))?
             .borrow_mut();
 
-        p1.draw(selection, &mut p2)
+        p1.draw(&mut p2, selection)
     }
 
     pub fn new_pile(&mut self, name: String) {
-        self.piles.insert(name, RefCell::new(CardCollection::new()));
+        self.piles.insert(name, RefCell::new(Vec::new()));
     }
 
-    pub fn get_pile(&self, name: &String) -> Option<&RefCell<CardCollection>> {
+    pub fn get_pile(&self, name: &String) -> Option<&RefCell<Vec<Card>>> {
         self.piles.get(name)
     }
 

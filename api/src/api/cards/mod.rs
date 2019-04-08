@@ -13,8 +13,7 @@ pub use cardsuit::CardSuit;
 mod cardvalue;
 pub use cardvalue::CardValue;
 
-use super::api::CardAPIError;
-use super::stringcode::*;
+use super::*;
 
 const CARD_CODES: &'static [&str] = &[
     "AS", "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "0S", "JS", "QS", "KS", "AD", "2D", "3D",
@@ -26,7 +25,6 @@ const CARD_CODES: &'static [&str] = &[
 pub const ALL_CARDS: &'static Fn() -> Vec<Card> = &|| {
     CARD_CODES
         .iter()
-        .cloned()
         .map(|code| Card::from_str(code.to_string()).unwrap())
         .collect()
 };
