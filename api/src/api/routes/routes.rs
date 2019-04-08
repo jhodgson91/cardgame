@@ -43,7 +43,7 @@ pub fn get_pile(conn: GamesDbConn, id: String, name: String) -> Result<JsonValue
 use rocket_contrib::json::Json;
 
 #[put("/game/<id>/<name>", data = "<drawdata>")]
-pub fn draw_from_pile(
+pub fn draw_into_pile(
     conn: GamesDbConn,
     id: String,
     name: String,

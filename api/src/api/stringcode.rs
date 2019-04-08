@@ -24,7 +24,7 @@ impl<'de, T: HasStringCode> Visitor<'de> for CodeVisitor<T> {
     type Value = T;
 
     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-        formatter.write_str("a card code")
+        formatter.write_str("a string code")
     }
 
     fn visit_str<E>(self, value: &str) -> Result<Self::Value, E>
@@ -33,7 +33,7 @@ impl<'de, T: HasStringCode> Visitor<'de> for CodeVisitor<T> {
     {
         match T::from_str(value.to_string()) {
             Some(s) => Ok(s),
-            None => Err(E::custom("Invalid card code")),
+            None => Err(E::custom("Invalid string code")),
         }
     }
 }

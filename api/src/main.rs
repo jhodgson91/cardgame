@@ -37,7 +37,7 @@ fn main() {
                 api::new_game,
                 api::get_game,
                 api::get_pile,
-                api::draw_from_pile,
+                api::draw_into_pile,
             ])
         .launch();
 }

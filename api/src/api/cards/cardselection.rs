@@ -23,7 +23,7 @@ pub enum CardSelection {
 impl CardSelection {
     pub fn select_from(&self, from: &Vec<Card>) -> Result<Vec<Card>, CardAPIError> {
         use CardSelection::*;
-        let r = match self {
+        match self {
             Empty => Ok(Vec::new()),
             All(shuffle) => {
                 if *shuffle {
@@ -37,9 +37,7 @@ impl CardSelection {
             Bottom(n) => CardSelection::select_bottom(from, n),
             Filter { suits, values } => CardSelection::select_filter(from, suits, values),
             Cards(cards) => CardSelection::select_cards(from, cards),
-        };
-        println!("{:?}", r);
-        r
+        }        
     }
 
     fn select_random(from: &Vec<Card>, n: &usize) -> Result<Vec<Card>, CardAPIError> {
@@ -104,33 +102,5 @@ impl CardSelection {
             }
         }
         Ok(result)
-    }
-}
-
-const LIMIT: u64 = 256;
-
-use rocket::data::{self, FromDataSimple};
-use rocket::http::{ContentType, Status};
-use rocket::{Data, Outcome, Outcome::*, Request};
-use std::io::Read;
-
-impl FromDataSimple for CardSelection {
-    type Error = String;
-
-    fn from_data(req: &Request, data: Data) -> data::Outcome<Self, String> {
-        let person_ct = ContentType::JSON;
-        if req.content_type() != Some(&person_ct) {
-            return Outcome::Forward(data);
-        }
-
-        let mut string = String::new();
-        if let Err(e) = data.open().take(LIMIT).read_to_string(&mut string) {
-            return Failure((Status::InternalServerError, format!("{:?}", e)));
-        }
-
-        match serde_json::from_str::<CardSelection>(string.as_str()) {
-            Ok(result) => Outcome::Success(result),
-            Err(e) => Failure((Status::InternalServerError, format!("{:?}", e))),
-        }
     }
 }

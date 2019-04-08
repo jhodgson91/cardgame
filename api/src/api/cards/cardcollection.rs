@@ -20,7 +20,6 @@ impl CardCollection for Vec<Card> {
             into.append(&mut to_draw);
         }
 
-        println!("Made it...");
         Ok(())
     }
 }
