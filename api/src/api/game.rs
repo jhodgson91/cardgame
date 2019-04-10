@@ -12,7 +12,7 @@ use std::collections::HashMap;
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Game {
     id: String,
-    piles: HashMap<String, RefCell<Vec<Card>>>,
+    piles: HashMap<String, RefCell<Cards>>,
 }
 
 impl Game {
@@ -20,7 +20,7 @@ impl Game {
         let mut piles = HashMap::new();
         piles.insert(
             String::from("deck"),
-            RefCell::new(Vec::<Card>::from(CardSelection::All(true))),
+            RefCell::new(Cards::from(CardSelection::All(true))),
         );
 
         Game {
@@ -39,17 +39,16 @@ impl Game {
         to: &String,
         selection: &CardSelection,
     ) -> Result<(), CardAPIError> {
-        println!("{:?}", selection);
-        let mut p1 = self
-            .piles
-            .get(from)
-            .ok_or(CardAPIError::NotFound(format!("Pile {}", from.clone())))?
-            .borrow_mut();
-        let mut p2 = self
-            .piles
-            .get(to)
-            .ok_or(CardAPIError::NotFound(format!("Pile: {}", to.clone())))?
-            .borrow_mut();
+        if (!self.has_pile(from)) {
+            return Err(CardAPIError::NotFound(format!("Pile {}", from.clone())));
+        }
+
+        if (!self.has_pile(to)) {
+            self.new_pile(to.clone());
+        }
+
+        let mut p1 = self.get_pile(from).unwrap().borrow_mut();
+        let mut p2 = self.get_pile(to).unwrap().borrow_mut();
 
         p1.draw(&mut p2, selection)
     }
@@ -58,7 +57,7 @@ impl Game {
         self.piles.insert(name, RefCell::new(Vec::new()));
     }
 
-    pub fn get_pile(&self, name: &String) -> Option<&RefCell<Vec<Card>>> {
+    pub fn get_pile(&self, name: &String) -> Option<&RefCell<Cards>> {
         self.piles.get(name)
     }
 

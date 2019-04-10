@@ -29,14 +29,7 @@ pub fn get_game(conn: GamesDbConn, id: String) -> Result<JsonValue, CardAPIError
 #[get("/game/<id>/<name>", rank = 2)]
 pub fn get_pile(conn: GamesDbConn, id: String, name: String) -> Result<JsonValue, CardAPIError> {
     let mut game = Game::load(&conn, id)?;
-    let pile = if game.has_pile(&name) {
-        game.get_pile(&name)
-    } else {
-        game.new_pile(name.clone());
-        game.save(&conn)?;
-        game.get_pile(&name)
-    };
-
+    let pile = game.get_pile(&name);
     Ok(json!({ name: pile }))
 }
 

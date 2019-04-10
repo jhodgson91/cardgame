@@ -1,5 +1,6 @@
 #[derive(Debug)]
 pub enum CardAPIError {
+    Unknown,
     DieselError(diesel::result::Error),
     NotFound(String),
     AlreadyExists,
@@ -37,7 +38,7 @@ impl Responder<'static> for CardAPIError {
 }
 
 impl From<diesel::result::Error> for CardAPIError {
-    fn from(e: diesel::result::Error) -> CardAPIError {
+    fn from(e: diesel::result::Error) -> Self {
         CardAPIError::DieselError(e)
     }
 }

@@ -9,7 +9,7 @@ pub trait CardCollection {
     fn draw(&mut self, into: &mut Self, selection: &CardSelection) -> Result<(), CardAPIError>;
 }
 
-impl CardCollection for Vec<Card> {
+impl CardCollection for Cards {
     fn draw(&mut self, into: &mut Self, selection: &CardSelection) -> Result<(), CardAPIError> {
         let mut to_draw = selection.select_from(&self)?;
 
@@ -24,7 +24,7 @@ impl CardCollection for Vec<Card> {
     }
 }
 
-impl From<CardSelection> for Vec<Card> {
+impl From<CardSelection> for Cards {
     fn from(selection: CardSelection) -> Self {
         selection.select_from(&ALL_CARDS()).unwrap()
     }

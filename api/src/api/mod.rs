@@ -13,3 +13,5 @@ pub use game::*;
 pub use models::*;
 pub use routes::*;
 pub use stringcode::*;
+
+type Cards = Vec<Card>;

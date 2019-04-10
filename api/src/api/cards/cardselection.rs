@@ -17,11 +17,11 @@ pub enum CardSelection {
         #[serde(default)]
         values: Vec<CardValue>,
     },
-    Cards(Vec<Card>),
+    Cards(Cards),
 }
 
 impl CardSelection {
-    pub fn select_from(&self, from: &Vec<Card>) -> Result<Vec<Card>, CardAPIError> {
+    pub fn select_from(&self, from: &Cards) -> Result<Cards, CardAPIError> {
         use CardSelection::*;
         match self {
             Empty => Ok(Vec::new()),
@@ -40,7 +40,7 @@ impl CardSelection {
         }        
     }
 
-    fn select_random(from: &Vec<Card>, n: &usize) -> Result<Vec<Card>, CardAPIError> {
+    fn select_random(from: &Cards, n: &usize) -> Result<Cards, CardAPIError> {
         use rand::seq::SliceRandom;
         use rand::thread_rng;
 
@@ -55,7 +55,7 @@ impl CardSelection {
         }
     }
 
-    fn select_top(from: &Vec<Card>, n: &usize) -> Result<Vec<Card>, CardAPIError> {
+    fn select_top(from: &Cards, n: &usize) -> Result<Cards, CardAPIError> {
         if (*n <= from.len()) {
             let start = if *n > from.len() { 0 } else { from.len() - n };
             Ok(from[start..].to_vec())
@@ -64,7 +64,7 @@ impl CardSelection {
         }
     }
 
-    fn select_bottom(from: &Vec<Card>, n: &usize) -> Result<Vec<Card>, CardAPIError> {
+    fn select_bottom(from: &Cards, n: &usize) -> Result<Cards, CardAPIError> {
         if *n < from.len() {
             let end = std::cmp::min(*n, from.len());
             Ok(from[..end].to_vec())
@@ -74,10 +74,10 @@ impl CardSelection {
     }
 
     fn select_filter(
-        from: &Vec<Card>,
+        from: &Cards,
         suits: &Vec<CardSuit>,
         values: &Vec<CardValue>,
-    ) -> Result<Vec<Card>, CardAPIError> {
+    ) -> Result<Cards, CardAPIError> {
         let test_suit = |c: &Card| suits.len() == 0 || suits.contains(&c.suit);
         let test_value = |c: &Card| values.len() == 0 || values.contains(&c.value);
 
@@ -92,7 +92,7 @@ impl CardSelection {
         }
     }
 
-    fn select_cards(from: &Vec<Card>, cards: &Vec<Card>) -> Result<Vec<Card>, CardAPIError> {
+    fn select_cards(from: &Cards, cards: &Cards) -> Result<Cards, CardAPIError> {
         let mut result = Vec::new();
         for card in cards {
             if from.contains(card) {
