@@ -31,6 +31,11 @@ export type CardSelection =
     | { cards: Card[] }
     | { filter: { suits?: CardSuit[], values?: CardValue[] } };
 
+export type MoveRequest = {
+    source: string,
+    selection: CardSelection;
+}
+
 export class Card {
     code: CardCode;
 
@@ -48,9 +53,17 @@ export class Card {
 
 export type Piles = { [name: string]: Card[] }
 
+
+export const test_url = "/api/game";
 export class Game {
     id: string;
     piles: Piles;
+
+    static async new(): Promise<Game> {
+        return axios.post<GameResponse>(test_url + "/new").then(response => {
+            return new Game(response.data);
+        })
+    }
 
     constructor(data: GameResponse) {
         this.id = data.id;
@@ -59,11 +72,19 @@ export class Game {
             this.piles[key] = data.piles[key].map((code: CardCode) => new Card(code));
         })
     }
-}
 
-export const test_url = "/api/game";
-export async function test(): Promise<Game> {
-    return axios.post(test_url + "/new").then((response: AxiosResponse<GameResponse>) => {
-        return new Game(response.data);
-    })
+    async draw(from: string, to: string, selection: CardSelection) {
+        let body: MoveRequest = {
+            source: from,
+            selection: selection,
+        }
+
+        return axios.put<GameResponse>(this.url + `/${to}`, body).then(response => {
+            Object.assign(this, new Game(response.data));
+        })
+    }
+
+    get url(): string {
+        return test_url + `/${this.id}`;
+    }
 }

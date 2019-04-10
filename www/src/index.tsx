@@ -5,9 +5,10 @@ import Game from './Components/Game'
 import * as api from './api';
 
 async function newapi_test() {
-    let g = await api.test();
-    console.log(g.piles["deck"][0].value);
-    console.log(g.piles["deck"][0].suit);
+    let g = await api.Game.new();
+    console.log(g);
+    await g.draw("deck", "test", { random: 10 });
+    console.log(g);
 }
 
 newapi_test();
