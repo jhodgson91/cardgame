@@ -11,8 +11,8 @@ const baseUrl: string = "https://deckofcardsapi.com/api/"
 
 //api wrapper function
 async function api(url: string) {
-    let res = await axios.get(url)
-    return res.data.success ? res.data : console.log("error", res.data)
+	let res = await axios.get(url)
+	return res.data.success ? res.data : console.log("error", res.data)
 }
 
 //Define props types
@@ -126,7 +126,7 @@ export default class Game extends React.Component<Props, State> {
 		let deckUpdate1: deckType | undefined = await this.play(player0, player1, cardInit)
 		deck = deckUpdate1
 		let deckUpdate2: deckType | undefined = await this.play(player0, player2, cardInit)
-		deck= deckUpdate2
+		deck = deckUpdate2
 		//Update the url for other functions
 		this.setState({
 			url: url
@@ -138,23 +138,18 @@ export default class Game extends React.Component<Props, State> {
 	//This function will draw a number of cards and put them somewhere
 	//This will update the deck in state and also return the deck for other uses
 	async play(from: string, to: string, num: number = 1) {
-		console.log("play is happening")
 		let cards: cardType[] = []
 		let deck: deckType = this.state.deck
 		let url: string = baseUrl
 		url = `${url}deck/${deck.deck_id}`
 		//Draw random cards from a pile
 		let drawCard = await api(`${url}/pile/${from}/draw/?count=${num}`)
-		console.log("player drawCard", drawCard)
 		//Copy cards locally
 		let copyCard: cardType[] = drawCard.success ? drawCard.cards  : console.log("play draw error", drawCard)
-		console.log("player, copyCard", copyCard)
 		//Convert cards to string
 		let cardList: string = copyCard.map(card => card.code).toString()
-		console.log("player cardList", cardList)
 		//Add the cards to the new pile
 		let addCard = await api(`${url}/pile/${to}/add/?cards=${cardList}`)
-		console.log("player addCard", addCard)
 		//Update from pile
 		let updateFromPile = addCard.success ? await api(`${url}/pile/${from}/list/`) : console.log(addCard)
 		deck.piles[from] = updateFromPile.success ? updateFromPile.piles[from] : console.log(updateFromPile)
@@ -181,9 +176,7 @@ export default class Game extends React.Component<Props, State> {
 	showCards(player: string) {
 		let isReady: boolean = this.state.isReady
 		if(isReady) {
-			console.log("showcards1",this.state.deck)
 			let playerPile = this.state.deck.piles[player]
-			console.log("showcards2", playerPile.cards)
 			if(playerPile != undefined) {
 				let playerCards: ReactNode = playerPile.cards.map(c => <Card key={c.code.toString()} image={c.image} value={c.value} suit={c.suit} code={c.code}/>)
 				return playerCards
