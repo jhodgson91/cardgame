@@ -4,39 +4,41 @@ import Link from '../Link.react';
 import renderer from 'react-test-renderer';
 import Player from './Player';
 
-it('renders the same as last time with a button', () => {
-  //Mock the button clicking
-  const mockCallBack = jest.fn();
+//Mock the button clicking
+const mockCallBack = jest.fn();
+
+const playerButton: any = enzyme.shallow(
+    <Player title="house" readOnly={false} theme="house" playCard={ mockCallBack }>
+        <div id="test">Text</div>
+    </Player>
+)
+
+const playerNoButton: any = enzyme.shallow(
+    <Player title="house" readOnly={true} title="house" playCard={ mockCallBack }>
+        <div id="test">Text</div>
+    </Player>
+)
+const playerNoChild: any = enzyme.shallow(
+    <Player title="house" readOnly={true} theme="house"/>
+)
+
+it('renders the same as last time with a button', () => { 
   const tree = renderer
-    .create(
-        <Player title="house" readOnly={false} playCard={ mockCallBack }>
-            <div id="test">Text</div>
-        </Player>)
+    .create(playerButton)
     .toJSON();
   expect(tree).toMatchSnapshot();
 });
 
 it('renders the same as last time without a button', () => {
-  //Mock the button clicking
-  const mockCallBack = jest.fn();
   const tree = renderer
-    .create(
-        <Player title="house" readOnly={true} playCard={ mockCallBack }>
-            <div id="test">Text</div>
-        </Player>)
+    .create(playerNoButton)
     .toJSON();
   expect(tree).toMatchSnapshot();
 });
 
 
 it('renders with a button', () => {
-  //Mock the button clicking
-  const mockCallBack = jest.fn();
-  const player = enzyme.shallow(
-    <Player title="house" readOnly={false} playCard={ mockCallBack }>
-      <div id="test">Text</div>
-    </Player>
-  );
+  const player = playerButton;
   expect(player.find('#house')).toBeDefined;
   expect(player.find('h3').text()).toBe('house');
   expect(player.find('button').text()).toBe('Play card');
@@ -45,10 +47,8 @@ it('renders with a button', () => {
   expect(mockCallBack.mock.calls.length).toEqual(1);
 });
 
-it('renders without a button', () => {
-  //Mock the button clicking
-  const mockCallBack = jest.fn();
-  const player = enzyme.shallow(<Player title="house" readOnly={true}/>);
+it('renders without a button and no child component', () => {
+  const player = playerNoChild;
   expect(player.find('#house')).toBeDefined;
   expect(player.find('h3').text()).toBe('house');
   expect(player.find('button')).toBeUndefined;

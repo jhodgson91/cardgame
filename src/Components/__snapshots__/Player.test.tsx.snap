@@ -3,6 +3,7 @@
 exports[`renders the same as last time with a button 1`] = `
 <div
   className="grid-x grid-margin-x"
+  id="house"
 >
   <div
     className="small-2 small-offset-1"
@@ -22,8 +23,7 @@ exports[`renders the same as last time with a button 1`] = `
     </button>
   </div>
   <div
-    className="cell player"
-    id="house"
+    className="cell player house"
   >
     <div
       className="grid-container"
@@ -45,6 +45,7 @@ exports[`renders the same as last time with a button 1`] = `
 exports[`renders the same as last time without a button 1`] = `
 <div
   className="grid-x grid-margin-x"
+  id="house"
 >
   <div
     className="small-2 small-offset-1"
@@ -54,8 +55,7 @@ exports[`renders the same as last time without a button 1`] = `
     </h3>
   </div>
   <div
-    className="cell player"
-    id="house"
+    className="cell player undefined"
   >
     <div
       className="grid-container"

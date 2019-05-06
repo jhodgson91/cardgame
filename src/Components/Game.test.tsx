@@ -9,9 +9,9 @@ import Game from './Game';
 
 var testDeck: Deck | undefined;
 const testPlayers: Array<any> = [
-    { name: 'house', readOnly: true },
-    { name: 'p1', readOnly: false },
-    { name: 'p2', readOnly: false }
+    { id: 0, name: 'house', readOnly: true, theme: "house" },
+    { id: 1, name: 'p1', readOnly: false, theme: "p1" },
+    { id: 2, name: 'p2', readOnly: false, theme: "p2" }
 ]
 
 beforeAll(async () => {
