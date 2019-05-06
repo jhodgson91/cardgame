@@ -118,9 +118,17 @@ export default class Game extends React.Component<Props, State> {
 		deck.remaining = createDeck.remaining
 		//Copy new pile to deck
 		deck.piles = getPile.piles
+		//Create player one
+		let cardInit: number = this.state.cardInit
+		let player0: string = this.state.players[0].name
+		let player1: string = this.state.players[1].name
+		let player2: string = this.state.players[2].name
+		let deckUpdate1: deckType | undefined = await this.play(player0, player1, cardInit)
+		deck = deckUpdate1
+		let deckUpdate2: deckType | undefined = await this.play(player0, player2, cardInit)
+		deck= deckUpdate2
 		//Update the url for other functions
 		this.setState({
-			isReady: true,
 			url: url
 		})
 		//Return deck with deck data plus the house pile ready to use
@@ -131,51 +139,39 @@ export default class Game extends React.Component<Props, State> {
 	//This will update the deck in state and also return the deck for other uses
 	async play(from: string, to: string, num: number = 1) {
 		console.log("play is happening")
-		let isReady: boolean = this.state.isReady
-		if(isReady) {
-			let cards: cardType[] = []
-			let deck: deckType = this.state.deck
-			let url: string = baseUrl
-			url = `${url}deck/${deck.deck_id}`
-			//Draw random cards from a pile
-			let drawCard = await api(`${url}/pile/${from}/draw/?count=${num}`)
-			console.log("player drawCard", drawCard)
-			//Copy cards locally
-			let copyCard: cardType[] = drawCard.success ? drawCard.cards  : console.log("play draw error", drawCard)
-			console.log("player, copyCard", copyCard)
-			//Convert cards to string
-			let cardList: string = copyCard.map(card => card.code).toString()
-			console.log("player cardList", cardList)
-			//Add the cards to the new pile
-			let addCard = await api(`${url}/pile/${to}/add/?cards=${cardList}/`)
-			console.log("player addCard", addCard)
-			//Update from pile
-			let updateFromPile = addCard.success ? await api(`${url}/pile/${from}/list/`) : console.log(addCard)
-			deck.piles[from] = updateFromPile.success ? updateFromPile.piles[from] : console.log(updateFromPile)
-			//Update to pile
-			let updateToPile = addCard.success ? await api(`${url}/pile/${to}/list/`) : console.log(addCard)
-			deck.piles[to] = updateToPile.success ?  updateToPile.piles[to] : console.log(updateToPile)
-			//Update the state with the amended deck
-			return deck
-		}
+		let cards: cardType[] = []
+		let deck: deckType = this.state.deck
+		let url: string = baseUrl
+		url = `${url}deck/${deck.deck_id}`
+		//Draw random cards from a pile
+		let drawCard = await api(`${url}/pile/${from}/draw/?count=${num}`)
+		console.log("player drawCard", drawCard)
+		//Copy cards locally
+		let copyCard: cardType[] = drawCard.success ? drawCard.cards  : console.log("play draw error", drawCard)
+		console.log("player, copyCard", copyCard)
+		//Convert cards to string
+		let cardList: string = copyCard.map(card => card.code).toString()
+		console.log("player cardList", cardList)
+		//Add the cards to the new pile
+		let addCard = await api(`${url}/pile/${to}/add/?cards=${cardList}`)
+		console.log("player addCard", addCard)
+		//Update from pile
+		let updateFromPile = addCard.success ? await api(`${url}/pile/${from}/list/`) : console.log(addCard)
+		deck.piles[from] = updateFromPile.success ? updateFromPile.piles[from] : console.log(updateFromPile)
+		//Update to pile
+		let updateToPile = addCard.success ? await api(`${url}/pile/${to}/list/`) : console.log(addCard)
+		deck.piles[to] = updateToPile.success ?  updateToPile.piles[to] : console.log(updateToPile)
+		//Update the state with the amended deck
+		return deck
 	} 
   
 	//TODO: Make sure that deck can't be undefined
 	async componentDidMount() {
 		//Initiate the deck
-		let cardInit: number = this.state.cardInit
 		let deck: deckType = await this.initialiseDeck()
-		let player0: string = this.state.players[0].name
-		let player1: string = this.state.players[1].name
-		let player2: string = this.state.players[2].name
 		if (deck.success) {
-			//Create player one
-			let deckUpdate1: deckType | undefined = await this.play(player0, player1, cardInit)
-			//Update the deck
-			console.log("copy to pile house", deck.piles[player0])
-			console.log("copy to pile p1", deckUpdate1)
-			
 			this.setState({
+				isReady: true,
 				deck: deck
 			})
 		}
@@ -192,7 +188,7 @@ export default class Game extends React.Component<Props, State> {
 				let playerCards: ReactNode = playerPile.cards.map(c => <Card key={c.code.toString()} image={c.image} value={c.value} suit={c.suit} code={c.code}/>)
 				return playerCards
 			} else {
-				return <h3>No cards</h3>
+				return undefined
 			}
 		}
 	}
@@ -205,7 +201,7 @@ export default class Game extends React.Component<Props, State> {
 				.filter(i => i.readOnly === typeOfPlayer)
 				.map(i => 
 					<Player title={i.name} key={i.id} readOnly={i.readOnly} theme={i.theme} playCard={() => { console.log("click") }}>
-						{ this.showCards(i.name) }
+							 { (this.showCards(i.name) !== undefined) ? this.showCards(i.name) : <h3>No card</h3>  }
 					</Player>
 				)
 			return hand
@@ -214,15 +210,14 @@ export default class Game extends React.Component<Props, State> {
 
 	render(): React.ReactNode {
 
+		const ID: string = this.state.deck.deck_id
+		const isReady: boolean = this.state.isReady
+		const loadingText: string = "Loading..."
+		const largeWidth: number = 12
+		const RO: boolean = true
+		const W: boolean = false
+			
 		return (
-			
-			const ID: string = this.state.deck.deck_id
-			const isReady: boolean = this.state.isReady
-			const loadingText: string = "Loading..."
-			const largeWidth: number = 12
-			const RO: boolean = true
-			const W: boolean = false
-			
 			<div className="cell">
 				{ isReady ? <Hero title={ID}/> : <Hero title={loadingText}/> }
 				<PlayerWrapper title="This is the house" grid={largeWidth}>
