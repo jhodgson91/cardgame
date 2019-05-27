@@ -1,11 +1,56 @@
-import axios from "axios";
-import Deck from "./Objects/Deck";
+import axios from "axios"
+import {deckType, playerType, pileType, cardType} from "./Components/Game"
 
-export const url = "https://deckofcardsapi.com/api/"
+//Base api URL
+const baseUrl: string = "https://deckofcardsapi.com/api/"
 
-export async function getDeck({ deck_id = "new", shuffled = true } = {}) {
-    return axios.get(url + "deck/" + deck_id + "/" + (shuffled ? "shuffle/" : ""))
-        .then(response => {
-            return response.data.success ? new Deck(response.data) : undefined
-        })
+//Generic handle error function, returns undefined
+export async function handleError(desc: string, err: any) {
+	console.log(desc, err)
+}
+
+//Api wrapper function, return data or handle error
+export async function getUrl(url: string) {
+	let res = await axios.get(url)
+	return res.data
+}
+
+//Request a new deck from the api, returns deck or handle error
+export async function newDeck(shuffled: boolean) {
+	//Request a shuffled deck or an unshuffled deck
+	let res = shuffled ? await getUrl(`${baseUrl}deck/new/shuffle/`) : await getUrl(`${baseUrl}deck/new/`) 
+	//Return the new deck if success or handle error
+	let deck_id: string = res.deck_id 
+	return deck_id
+}
+
+//draws from a pile and returns the cards or handle error
+export async function draw(deck_id: string, location:string, num: number) {
+	//Check if draw from deck or pile
+	let res = location === "deck" ? await getUrl(`${baseUrl}deck/${deck_id}/draw/?count=${num}`) : 
+		await getUrl(`${baseUrl}deck/${deck_id}/pile/${location}/draw/?count=${num}`)
+	let cards: cardType[] = res.cards
+	//Check for success and either return cards or handle error
+	return cards
+}
+
+//Takes an array of card types, converts them to a string and the adds the cards 
+//to a new pile and returns true or handle error
+export async function add(deck_id: string, location: string, cards: cardType[] ) {
+	//Convert cards to string
+	let cardList: string = cards.map(card => card.code).toString()
+	//Add the cards to the new pile
+	let res = await getUrl(`${baseUrl}deck/${deck_id}/pile/${location}/add/?cards=${cardList}`)
+	let success: boolean = res.success
+	//Return the result or handle error
+	return success
+}
+
+//Updates one pile from the api or handles error
+export async function update(deck_id: string, location: string, deck: deckType) {
+	//Request pile update from api
+	let res = await getUrl(`${baseUrl}deck/${deck_id}/pile/${location}/list/`)
+	//Copy updated pile to local deck or handle error
+	deck.piles[location] = res.piles[location]
+	return deck
 }
