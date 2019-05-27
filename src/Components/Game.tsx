@@ -26,7 +26,8 @@ export interface playerType {
 	id: number,
 	name: string,
 	readOnly: boolean,
-	theme: string
+	theme: string,
+	score: number
 }
 
 export interface pileType {
@@ -67,9 +68,9 @@ export default class Game extends React.Component<Props, State> {
 			drawFrom: 'top',
 			cardInit: 26,
 			players: [
-				{ id: 0, name: 'house', readOnly: true, theme: "house"},
-				{ id: 1, name: 'p1', readOnly: false, theme: "p1"},
-				{ id: 2, name: 'p2', readOnly: false, theme: "p2"}
+				{ id: 0, name: 'house', readOnly: true, theme: "house", score: 0},
+				{ id: 1, name: 'p1', readOnly: false, theme: "p1", score: 0},
+				{ id: 2, name: 'p2', readOnly: false, theme: "p2", score: 0}
 			]
 		}
     //Binding function to class
@@ -77,7 +78,8 @@ export default class Game extends React.Component<Props, State> {
     this.play = this.play.bind(this)
     this.showCards = this.showCards.bind(this)
     this.showHand = this.showHand.bind(this)
-    
+    this.handleWin = this.handleWin.bind(this)
+		this.resetGame = this.resetGame.bind(this)
   }
 
 	//Initialises the deck and adds all cards to the base pile
@@ -86,13 +88,20 @@ export default class Game extends React.Component<Props, State> {
 		let deck: deckType = this.state.deck    		
 		let players: playerType[] = this.state.players
 		let shuffled: boolean = true
+		//Get the deck and id
 		deck.deck_id = await api.newDeck(shuffled)
+		//Save the deck id locally
 		let deck_id = deck.deck_id
+		//Draw all cards into nowhere
 		let drawAllCards: cardType[] = await api.draw(deck_id, "deck", 52)
+		//Add all cards to the house
 		let createHousePile: boolean = await api.add(deck_id, players[0].name, drawAllCards)
+		//Update the house pile from the api
 		deck = await api.update(deck_id, players[0].name, deck)
+		//Add inititial cards to each pile and create them
 		deck = await this.play(deck, players[0].name, players[1].name, cardInit)
 		deck = await this.play(deck, players[0].name, players[2].name, cardInit)
+		//Update the deck status, update state and return the deck for further use
 		deck.success = true
 		this.setState({
 				deck: deck
@@ -105,17 +114,56 @@ export default class Game extends React.Component<Props, State> {
 	async play(deck: deckType, from: string, to: string, num: number = 1) {
 		let cards: cardType[] = []
 		let deck_id: string = deck.deck_id
+		//Draw the cards from the pile you get them from
 		let drawCard: cardType[] = await api.draw(deck_id, from, num)
+		//Add the cards to the pile you're playing to
 		let addCard: boolean = await api.add(deck_id, to, drawCard)
+		//Get the updated cards from the api, update state and return cards for future use
 		deck = await api.update(deck_id, from, deck)
 		deck = await api.update(deck_id, to, deck)
 		this.setState({
 			deck: deck
 		})
+		//Check if the player won or not
+		this.handleWin(from)
 		return deck
-	} 
+	}
+	
+	//This checks if a player has won or not
+	handleWin(player: string) {
+		let isReady = this.state.isReady
+		let success = this.state.deck.success
+		//Check if the game has been initiated
+		if(isReady && success) {
+			let players: playerType[] = this.state.players
+			let playerId: number = players.findIndex(i => i.name == player)
+			let cards: cardType[] = this.state.deck.piles[players[0].name].cards
+			//Check if two cards have been played
+			if(cards.length >= 1) {
+				//Get current and previous card
+				let currentCard: string = cards[cards.length - 1].code.charAt(0) //This briefly trigger while deck is being generated
+				let previousCard: string = cards[cards.length - 2].code.charAt(0)
+				//Check if cards are the same number when snapped
+				if(currentCard === previousCard) {
+					alert(player + " you fucking won!")
+					players[playerId].score++
+					this.setState({
+						players: players
+					})
+					this.resetGame(player)
+				}
+			}
+		}
+	}
   
-	//TODO: Make sure that deck can't be undefined
+	async resetGame(winner: string) {
+		let deck: deckType = this.state.deck
+		let from: string = this.state.players[0].name
+		let num: number = this.state.deck.piles[from].cards.length
+		await this.play(deck, from, winner, num)
+	}
+	
+	//Get the new deck and then set the make the game ready
 	async componentDidMount() {
 		//Initiate the deck
 		let deck: deckType = await this.initialiseDeck()
@@ -131,7 +179,10 @@ export default class Game extends React.Component<Props, State> {
 		let isReady: boolean = this.state.isReady
 		if(isReady) {
 			let playerPile = this.state.deck.piles[player]
-			let playerCards: ReactNode = playerPile.cards.map(c => <Card key={c.code.toString()} image={c.image} value={c.value} suit={c.suit} code={c.code}/>)
+			//Filter out to only show the last two items
+			//Map the data to a card component
+			let playerCards: ReactNode = playerPile.cards
+				.map(c => <Card key={c.code.toString()} image={c.image} value={c.value} suit={c.suit} code={c.code}/>)
 			return playerCards
 		}
 	}
@@ -141,10 +192,13 @@ export default class Game extends React.Component<Props, State> {
 		if (isReady) {
 			let players: playerType[] = this.state.players
 			let deck: deckType = this.state.deck
+			//Filter out players that aren't read only
+			//Map players and get cards for that player
 			let hand: ReactNode = players
 				.filter(i => i.readOnly === typeOfPlayer)
 				.map(i => 
 					<Player title={i.name} key={i.id} readOnly={i.readOnly} theme={i.theme} playCard={() => { this.play(deck, i.name, players[0].name, 1) }}>
+							 <p>{i.score}</p>
 							 { (this.showCards(i.name) !== undefined) ? this.showCards(i.name) : <h3>No card</h3>  }
 					</Player>
 				)

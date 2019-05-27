@@ -39,6 +39,9 @@ exports[`renders the same as last time 1`] = `
           <h2>
             This is the house
           </h2>
+          <h3>
+            Loading...
+          </h3>
         </div>
       </div>
     </div>
@@ -58,6 +61,9 @@ exports[`renders the same as last time 1`] = `
           <h2>
             These are players
           </h2>
+          <h3>
+            Loading...
+          </h3>
         </div>
       </div>
     </div>
