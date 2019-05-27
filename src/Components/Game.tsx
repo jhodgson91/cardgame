@@ -27,6 +27,7 @@ export interface playerType {
 	name: string,
 	readOnly: boolean,
 	theme: string,
+	turn: boolean,
 	score: number
 }
 
@@ -68,9 +69,9 @@ export default class Game extends React.Component<Props, State> {
 			drawFrom: 'top',
 			cardInit: 26,
 			players: [
-				{ id: 0, name: 'house', readOnly: true, theme: "house", score: 0},
-				{ id: 1, name: 'p1', readOnly: false, theme: "p1", score: 0},
-				{ id: 2, name: 'p2', readOnly: false, theme: "p2", score: 0}
+				{ id: 0, name: 'house', readOnly: true, theme: "house", turn: false, score: 0},
+				{ id: 1, name: 'p1', readOnly: false, theme: "p1", turn: false, score: 0},
+				{ id: 2, name: 'p2', readOnly: false, theme: "p2", turn: false, score: 0}
 			]
 		}
     //Binding function to class
@@ -78,8 +79,8 @@ export default class Game extends React.Component<Props, State> {
     this.play = this.play.bind(this)
     this.showCards = this.showCards.bind(this)
     this.showHand = this.showHand.bind(this)
-    this.handleWin = this.handleWin.bind(this)
 		this.resetGame = this.resetGame.bind(this)
+		this.snap = this.snap.bind(this)
   }
 
 	//Initialises the deck and adds all cards to the base pile
@@ -103,8 +104,10 @@ export default class Game extends React.Component<Props, State> {
 		deck = await this.play(deck, players[0].name, players[2].name, cardInit)
 		//Update the deck status, update state and return the deck for further use
 		deck.success = true
+		players[1].turn = true
 		this.setState({
-				deck: deck
+			deck: deck,
+			players: players
 		})
 		return deck
 	}
@@ -114,6 +117,9 @@ export default class Game extends React.Component<Props, State> {
 	async play(deck: deckType, from: string, to: string, num: number = 1) {
 		let cards: cardType[] = []
 		let deck_id: string = deck.deck_id
+		let players: playerType[] = this.state.players
+		let playerId: number = players.findIndex(i => i.name == from)
+		let otherPlayerId: number = players.length - playerId
 		//Draw the cards from the pile you get them from
 		let drawCard: cardType[] = await api.draw(deck_id, from, num)
 		//Add the cards to the pile you're playing to
@@ -121,16 +127,20 @@ export default class Game extends React.Component<Props, State> {
 		//Get the updated cards from the api, update state and return cards for future use
 		deck = await api.update(deck_id, from, deck)
 		deck = await api.update(deck_id, to, deck)
+		players[playerId].turn = false
+		console.log(otherPlayerId)
+		//players[otherPlayerId].turn = true
 		this.setState({
-			deck: deck
+			deck: deck,
+			players: players
 		})
-		//Check if the player won or not
-		this.handleWin(from)
 		return deck
+		
 	}
 	
+	
 	//This checks if a player has won or not
-	handleWin(player: string) {
+	async snap(player: string) {
 		let isReady = this.state.isReady
 		let success = this.state.deck.success
 		//Check if the game has been initiated
@@ -151,8 +161,12 @@ export default class Game extends React.Component<Props, State> {
 						players: players
 					})
 					this.resetGame(player)
+				} else {
+					alert("No snap")
 				}
 			}
+		} else {
+			alert("You can't snap yet")
 		}
 	}
   
@@ -197,9 +211,16 @@ export default class Game extends React.Component<Props, State> {
 			let hand: ReactNode = players
 				.filter(i => i.readOnly === typeOfPlayer)
 				.map(i => 
-					<Player title={i.name} key={i.id} readOnly={i.readOnly} theme={i.theme} playCard={() => { this.play(deck, i.name, players[0].name, 1) }}>
-							 <p>{i.score}</p>
-							 { (this.showCards(i.name) !== undefined) ? this.showCards(i.name) : <h3>No card</h3>  }
+					<Player 
+						title={i.name} 
+						key={i.id} 
+						readOnly={i.readOnly} 
+						theme={i.theme} 
+						playCard={() => { this.play(deck, i.name, players[0].name, 1) }}
+						snap={() => { this.snap(i.name) }}
+					>
+						<div>{i.score}</div>
+						{ (this.showCards(i.name) !== undefined) ? this.showCards(i.name) : <h3>No card</h3>  }
 					</Player>
 				)
 			return hand

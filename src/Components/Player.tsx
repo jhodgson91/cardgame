@@ -7,6 +7,7 @@ export interface Props {
   readOnly: boolean;
   theme: string;
   playCard: () => void | undefined;
+	snap: () => void | undefined;
 }
 
 export default class Player extends React.Component<Props> {
@@ -20,6 +21,7 @@ export default class Player extends React.Component<Props> {
       return (
         <div className="small-2">
           <button className="button" onClick={this.props.playCard}>Play card</button>
+					<button className="button" onClick={this.props.snap}>Snap</button>
         </div>
       )
     }
