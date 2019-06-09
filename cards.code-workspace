@@ -1,16 +1,16 @@
 {
 	"folders": [
 		{
-			"name": "api",
+			"name": "API",
 			"path": "./api"
 		},
 		{
-			"name": "www",
+			"name": "Web",
 			"path": "./www"
 		},
 		{
-			"name": "root",
-			"path": "."
+			"name": "Release",
+			"path": "./release"
 		}
 	],
 	"settings": {}
