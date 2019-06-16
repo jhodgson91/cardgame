@@ -92,7 +92,7 @@ export default class Game extends React.Component<Props, State> {
 		//Get the deck and id
 		deck.deck_id = await api.newDeck(shuffled)
 		//Save the deck id locally
-		let deck_id = deck.deck_id
+		let deck_id: string = deck.deck_id
 		//Draw all cards into nowhere
 		let drawAllCards: cardType[] = await api.draw(deck_id, "deck", 52)
 		//Add all cards to the house
@@ -141,8 +141,8 @@ export default class Game extends React.Component<Props, State> {
 	
 	//This checks if a player has won or not
 	async snap(player: string) {
-		let isReady = this.state.isReady
-		let success = this.state.deck.success
+		let isReady: boolean = this.state.isReady
+		let success: boolean = this.state.deck.success
 		//Check if the game has been initiated
 		if(isReady && success) {
 			let players: playerType[] = this.state.players
@@ -156,6 +156,7 @@ export default class Game extends React.Component<Props, State> {
 				//Check if cards are the same number when snapped
 				if(currentCard === previousCard) {
 					alert(player + " you fucking won!")
+					//Add one to the players score
 					players[playerId].score++
 					this.setState({
 						players: players
@@ -174,6 +175,7 @@ export default class Game extends React.Component<Props, State> {
 		let deck: deckType = this.state.deck
 		let from: string = this.state.players[0].name
 		let num: number = this.state.deck.piles[from].cards.length
+		//Send the cards from the house back to the winner
 		await this.play(deck, from, winner, num)
 	}
 	
@@ -192,7 +194,7 @@ export default class Game extends React.Component<Props, State> {
 	showCards(player: string) {
 		let isReady: boolean = this.state.isReady
 		if(isReady) {
-			let playerPile = this.state.deck.piles[player]
+			let playerPile: pileType = this.state.deck.piles[player]
 			//Filter out to only show the last two items
 			//Map the data to a card component
 			let playerCards: ReactNode = playerPile.cards
