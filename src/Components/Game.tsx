@@ -76,6 +76,7 @@ export default class Game extends React.Component<Props, State> {
 		}
     //Binding function to class
     this.initialiseDeck = this.initialiseDeck.bind(this)
+		this.handleTurn = this.handleTurn.bind(this)
     this.play = this.play.bind(this)
     this.showCards = this.showCards.bind(this)
     this.showHand = this.showHand.bind(this)
@@ -95,7 +96,6 @@ export default class Game extends React.Component<Props, State> {
 		let deck_id: string = deck.deck_id
 		//Draw all cards into nowhere
 		let drawAllCards: cardType[] = await api.draw(deck_id, "deck", 52)
-		//Add all cards to the house
 		let createHousePile: boolean = await api.add(deck_id, players[0].name, drawAllCards)
 		//Update the house pile from the api
 		deck = await api.update(deck_id, players[0].name, deck)
@@ -111,73 +111,6 @@ export default class Game extends React.Component<Props, State> {
 		})
 		return deck
 	}
-  
-	//This function will draw a number of cards and put them somewhere
-	//This will update the deck in state and also return the deck for other uses
-	async play(deck: deckType, from: string, to: string, num: number = 1) {
-		let cards: cardType[] = []
-		let deck_id: string = deck.deck_id
-		let players: playerType[] = this.state.players
-		let playerId: number = players.findIndex(i => i.name == from)
-		let otherPlayerId: number = players.length - playerId
-		//Draw the cards from the pile you get them from
-		let drawCard: cardType[] = await api.draw(deck_id, from, num)
-		//Add the cards to the pile you're playing to
-		let addCard: boolean = await api.add(deck_id, to, drawCard)
-		//Get the updated cards from the api, update state and return cards for future use
-		deck = await api.update(deck_id, from, deck)
-		deck = await api.update(deck_id, to, deck)
-		players[playerId].turn = false
-		console.log(otherPlayerId)
-		//players[otherPlayerId].turn = true
-		this.setState({
-			deck: deck,
-			players: players
-		})
-		return deck
-		
-	}
-	
-	
-	//This checks if a player has won or not
-	async snap(player: string) {
-		let isReady: boolean = this.state.isReady
-		let success: boolean = this.state.deck.success
-		//Check if the game has been initiated
-		if(isReady && success) {
-			let players: playerType[] = this.state.players
-			let playerId: number = players.findIndex(i => i.name == player)
-			let cards: cardType[] = this.state.deck.piles[players[0].name].cards
-			//Check if two cards have been played
-			if(cards.length >= 1) {
-				//Get current and previous card
-				let currentCard: string = cards[cards.length - 1].code.charAt(0) //This briefly trigger while deck is being generated
-				let previousCard: string = cards[cards.length - 2].code.charAt(0)
-				//Check if cards are the same number when snapped
-				if(currentCard === previousCard) {
-					alert(player + " you fucking won!")
-					//Add one to the players score
-					players[playerId].score++
-					this.setState({
-						players: players
-					})
-					this.resetGame(player)
-				} else {
-					alert("No snap")
-				}
-			}
-		} else {
-			alert("You can't snap yet")
-		}
-	}
-  
-	async resetGame(winner: string) {
-		let deck: deckType = this.state.deck
-		let from: string = this.state.players[0].name
-		let num: number = this.state.deck.piles[from].cards.length
-		//Send the cards from the house back to the winner
-		await this.play(deck, from, winner, num)
-	}
 	
 	//Get the new deck and then set the make the game ready
 	async componentDidMount() {
@@ -190,6 +123,79 @@ export default class Game extends React.Component<Props, State> {
 		}
 	}
   
+	//Takes the current player and changes to the next valid player
+	handleTurn(currentPlayer: string) {
+		let isReady: boolean = this.state.isReady
+		let success: boolean = this.state.deck.success
+		let players: playerType[] = this.state.players
+		let currentPlayerId: number = players.findIndex(i => i.name == currentPlayer)
+		let nextPlayerId: number = players.length - currentPlayerId //Changes player ignoring 0
+		//Check that the deck is prepped and it is the players turn
+		if(isReady && success && players[currentPlayerId].turn) {
+			players[currentPlayerId].turn = false
+			players[nextPlayerId].turn = true
+			return players
+		} else {
+			return players
+		}
+	}
+	
+	//This function will draw a number of cards and put them somewhere
+	//This will update the deck in state and also return the deck for other uses
+	async play(deck: deckType, from: string, to: string, num: number = 1) {
+		let cards: cardType[] = []
+		let deck_id: string = deck.deck_id
+		//Draw the cards from the pile you get them from
+		let drawCard: cardType[] = await api.draw(deck_id, from, num)
+		//Add the cards to the pile you're playing to
+		let addCard: boolean = await api.add(deck_id, to, drawCard)
+		//Get the updated cards from the api, update state and return cards for future use
+		deck = await api.update(deck_id, from, deck)
+		deck = await api.update(deck_id, to, deck)
+		this.setState({
+			deck: deck,
+			players: this.handleTurn(from)
+		})
+		return deck 
+	}
+	
+	//This checks if a player has won or not
+	async snap(currentPlayer: string) {
+		let isReady: boolean = this.state.isReady
+		let success: boolean = this.state.deck.success
+		let players: playerType[] = this.state.players
+		let currentPlayerId: number = players.findIndex(i => i.name == currentPlayer)
+		let nextPlayerId: number = players.length - currentPlayerId
+		let nextPlayer: string = players[nextPlayerId].name
+		let winner: string = ""
+		let cards: cardType[] = this.state.deck.piles[players[0].name].cards
+		//Check if the game has been initiated and if 2 or more cards have been played
+		if(isReady && success && cards.length >= 2) {
+			//Get current and previous card
+			let currentCard: string = cards[cards.length - 1].code.charAt(0) //This briefly trigger while deck is being generated
+			let previousCard: string = cards[cards.length - 2].code.charAt(0)
+			//Check if cards are the same number when snapped
+			if(currentCard === previousCard) {
+				winner = currentPlayer
+				alert(currentPlayer + " you fucking won!")
+			} else {
+				winner = nextPlayer
+				alert("No snap")
+			}
+			this.resetGame(winner) //THIS BREAKS AS TURN DOESN'T HANDLE IT PROPERLY
+		} else {
+			alert("You can't snap yet")
+		}
+	}
+	
+	//Send the cards from the house back to the winner
+	async resetGame(winner: string) {
+		let deck: deckType = this.state.deck
+		let from: string = this.state.players[0].name
+		let num: number = this.state.deck.piles[from].cards.length
+		await this.play(deck, from, winner, num)
+	}
+	
 	//Mapped components to make display easier. They just take state and display as lists
 	showCards(player: string) {
 		let isReady: boolean = this.state.isReady
@@ -217,6 +223,7 @@ export default class Game extends React.Component<Props, State> {
 						title={i.name} 
 						key={i.id} 
 						readOnly={i.readOnly} 
+						turn={i.turn}
 						theme={i.theme} 
 						playCard={() => { this.play(deck, i.name, players[0].name, 1) }}
 						snap={() => { this.snap(i.name) }}

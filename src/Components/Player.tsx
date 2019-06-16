@@ -5,6 +5,7 @@ import './Main.scss'
 export interface Props {
   title: string;
   readOnly: boolean;
+	turn: boolean;
   theme: string;
   playCard: () => void | undefined;
 	snap: () => void | undefined;
@@ -17,14 +18,20 @@ export default class Player extends React.Component<Props> {
   }
 
   showButtons() {
-    if (!this.props.readOnly) {
+    if (!this.props.readOnly && this.props.turn) {
       return (
         <div className="small-2">
           <button className="button" onClick={this.props.playCard}>Play card</button>
 					<button className="button" onClick={this.props.snap}>Snap</button>
         </div>
       )
-    }
+    } else if (!this.props.readOnly && !this.props.turn) {
+			return(
+				<div className="small-2">
+					<button className="button" onClick={this.props.snap}>Snap</button>
+        </div>
+			)
+		}
   }
 
   render(): React.ReactNode {
