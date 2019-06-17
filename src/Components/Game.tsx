@@ -27,8 +27,7 @@ export interface playerType {
 	name: string,
 	readOnly: boolean,
 	theme: string,
-	turn: boolean,
-	score: number
+	turn: boolean
 }
 
 export interface pileType {
@@ -69,9 +68,9 @@ export default class Game extends React.Component<Props, State> {
 			drawFrom: 'top',
 			cardInit: 26,
 			players: [
-				{ id: 0, name: 'house', readOnly: true, theme: "house", turn: false, score: 0},
-				{ id: 1, name: 'p1', readOnly: false, theme: "p1", turn: false, score: 0},
-				{ id: 2, name: 'p2', readOnly: false, theme: "p2", turn: false, score: 0}
+				{ id: 0, name: 'house', readOnly: true, theme: "house", turn: false},
+				{ id: 1, name: 'p1', readOnly: false, theme: "p1", turn: false},
+				{ id: 2, name: 'p2', readOnly: false, theme: "p2", turn: false}
 			]
 		}
     //Binding function to class
@@ -134,10 +133,8 @@ export default class Game extends React.Component<Props, State> {
 		if(isReady && success && players[currentPlayerId].turn) {
 			players[currentPlayerId].turn = false
 			players[nextPlayerId].turn = true
-			return players
-		} else {
-			return players
 		}
+		return players
 	}
 	
 	//This function will draw a number of cards and put them somewhere
@@ -172,17 +169,23 @@ export default class Game extends React.Component<Props, State> {
 		//Check if the game has been initiated and if 2 or more cards have been played
 		if(isReady && success && cards.length >= 2) {
 			//Get current and previous card
-			let currentCard: string = cards[cards.length - 1].code.charAt(0) //This briefly trigger while deck is being generated
+			let currentCard: string = cards[cards.length - 1].code.charAt(0) 
 			let previousCard: string = cards[cards.length - 2].code.charAt(0)
 			//Check if cards are the same number when snapped
 			if(currentCard === previousCard) {
+				//Set winner to current player and alert winner
 				winner = currentPlayer
 				alert(currentPlayer + " you fucking won!")
 			} else {
+				//Set winner to the other player, alert the loser and swap turns
 				winner = nextPlayer
 				alert("No snap")
+				//This should potentially be grouped with the deck setting
+				this.setState({
+					players: this.handleTurn(currentPlayer)
+				})
 			}
-			this.resetGame(winner) //THIS BREAKS AS TURN DOESN'T HANDLE IT PROPERLY
+			this.resetGame(winner)
 		} else {
 			alert("You can't snap yet")
 		}
@@ -204,6 +207,7 @@ export default class Game extends React.Component<Props, State> {
 			//Filter out to only show the last two items
 			//Map the data to a card component
 			let playerCards: ReactNode = playerPile.cards
+				.filter(c => playerPile.cards.indexOf(c) == playerPile.cards.length -1)
 				.map(c => <Card key={c.code.toString()} image={c.image} value={c.value} suit={c.suit} code={c.code}/>)
 			return playerCards
 		}
@@ -228,7 +232,6 @@ export default class Game extends React.Component<Props, State> {
 						playCard={() => { this.play(deck, i.name, players[0].name, 1) }}
 						snap={() => { this.snap(i.name) }}
 					>
-						<div>{i.score}</div>
 						{ (this.showCards(i.name) !== undefined) ? this.showCards(i.name) : <h3>No card</h3>  }
 					</Player>
 				)
@@ -241,17 +244,16 @@ export default class Game extends React.Component<Props, State> {
 		const ID: string = this.state.deck.deck_id
 		const isReady: boolean = this.state.isReady
 		const loadingText: string = "Loading..."
-		const largeWidth: number = 12
 		const RO: boolean = true
 		const W: boolean = false
 			
 		return (
 			<div className="cell">
 				{ isReady ? <Hero title={ID}/> : <Hero title={loadingText}/> }
-				<PlayerWrapper title="This is the house" grid={largeWidth}>
+				<PlayerWrapper title="This is the house">
 					{ isReady ? this.showHand(RO) : <h3>{loadingText}</h3> }
 				</PlayerWrapper>
-				<PlayerWrapper title="These are players" grid={largeWidth}>
+				<PlayerWrapper title="These are players">
 					{ isReady ? this.showHand(W) : <h3>{loadingText}</h3> }
 				</PlayerWrapper>
 			</div>

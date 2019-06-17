@@ -4,7 +4,6 @@ import './Main.scss'
 //Define props types
 export interface Props {
   title: string;
-  grid: number;
 }
 
 export default class PlayerWrapper extends React.Component<Props> {
@@ -18,10 +17,12 @@ export default class PlayerWrapper extends React.Component<Props> {
     return (
       <section className="players">
         <div className="grid-container">
-          <div className="grid-x grid-padding-x align-center">
-            <div className={`cell small-${this.props.grid}`}>
-              <h2>{this.props.title}</h2>
-              {this.props.children}
+					<div className="small-12">
+						<h2>{this.props.title}</h2>
+						<div className="grid-container">
+							<div className="grid-x grid-padding-x align-center">
+              	{this.props.children}
+							</div>
             </div>
           </div>
         </div>
