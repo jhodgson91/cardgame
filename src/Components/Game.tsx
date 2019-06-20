@@ -191,12 +191,12 @@ export default class Game extends React.Component<Props, State> {
 		}
 	}
 	
-	//Send the cards from the house back to the winner
+	//Send the cards from the house back to the winner and return deck for other uses
 	async resetGame(winner: string) {
 		let deck: deckType = this.state.deck
 		let from: string = this.state.players[0].name
 		let num: number = this.state.deck.piles[from].cards.length
-		await this.play(deck, from, winner, num)
+		return deck = await this.play(deck, from, winner, num)
 	}
 	
 	//Mapped components to make display easier. They just take state and display as lists
