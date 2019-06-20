@@ -47,7 +47,6 @@ export interface cardType {
 interface State {
 	isReady: boolean
 	deck: deckType
-	drawFrom: 'top' | 'bottom'
 	cardInit: number
 	players: playerType[]
 }
@@ -65,7 +64,6 @@ export default class Game extends React.Component<Props, State> {
 				remaining: 0,
 				piles: {}
 			},
-			drawFrom: 'top',
 			cardInit: 26,
 			players: [
 				{ id: 0, name: 'house', readOnly: true, theme: "house", turn: false},
@@ -75,6 +73,9 @@ export default class Game extends React.Component<Props, State> {
 		}
     //Binding function to class
     this.initialiseDeck = this.initialiseDeck.bind(this)
+		this.getOtherPlayer = this.getOtherPlayer.bind(this)
+		this.handleFailure = this.handleFailure.bind(this)
+		this.handleSuccess = this.handleSuccess.bind(this)
 		this.handleTurn = this.handleTurn.bind(this)
     this.play = this.play.bind(this)
     this.showCards = this.showCards.bind(this)
@@ -104,24 +105,34 @@ export default class Game extends React.Component<Props, State> {
 		//Update the deck status, update state and return the deck for further use
 		deck.success = true
 		players[1].turn = true
-		this.setState({
-			deck: deck,
-			players: players
-		})
+		this.setState({ deck: deck, players: players })
 		return deck
 	}
 	
 	//Get the new deck and then set the make the game ready
 	async componentDidMount() {
-		//Initiate the deck
 		let deck: deckType = await this.initialiseDeck()
-		if (deck.success) {
-			this.setState({
-				isReady: true
-			})
-		}
+		deck.success ? this.setState({ isReady: true }) : this.setState({ isReady: false })
 	}
   
+	getOtherPlayer(currentPlayer: string) {
+		let players: playerType[] = this.state.players
+		let currentPlayerId: number = players.findIndex(i => i.name == currentPlayer)
+		let nextPlayer: string = players[players.length - currentPlayerId].name
+		return nextPlayer
+	}
+	
+	handleFailure(winner: string, loser: string, message: string) {
+		alert(message)
+		this.setState({ players: this.handleTurn(loser) })
+		this.resetGame(loser)
+	}
+	
+	handleSuccess(winner: string, loser: string,  message: string) {
+		alert(winner + message)
+		this.resetGame(winner)
+	}
+	
 	//Takes the current player and changes to the next valid player
 	handleTurn(currentPlayer: string) {
 		let isReady: boolean = this.state.isReady
@@ -142,50 +153,35 @@ export default class Game extends React.Component<Props, State> {
 	async play(deck: deckType, from: string, to: string, num: number = 1) {
 		let cards: cardType[] = []
 		let deck_id: string = deck.deck_id
-		//Draw the cards from the pile you get them from
 		let drawCard: cardType[] = await api.draw(deck_id, from, num)
-		//Add the cards to the pile you're playing to
 		let addCard: boolean = await api.add(deck_id, to, drawCard)
 		//Get the updated cards from the api, update state and return cards for future use
 		deck = await api.update(deck_id, from, deck)
 		deck = await api.update(deck_id, to, deck)
-		this.setState({
-			deck: deck,
-			players: this.handleTurn(from)
-		})
+		this.setState({ deck: deck, players: this.handleTurn(from) })
 		return deck 
 	}
 	
 	//This checks if a player has won or not
 	async snap(currentPlayer: string) {
 		let isReady: boolean = this.state.isReady
-		let success: boolean = this.state.deck.success
+		let nextPlayer: string = this.getOtherPlayer(currentPlayer)
 		let players: playerType[] = this.state.players
-		let currentPlayerId: number = players.findIndex(i => i.name == currentPlayer)
-		let nextPlayerId: number = players.length - currentPlayerId
-		let nextPlayer: string = players[nextPlayerId].name
-		let winner: string = ""
+		let success: boolean = this.state.deck.success
 		let cards: cardType[] = this.state.deck.piles[players[0].name].cards
 		//Check if the game has been initiated and if 2 or more cards have been played
 		if(isReady && success && cards.length >= 2) {
-			//Get current and previous card
 			let currentCard: string = cards[cards.length - 1].code.charAt(0) 
 			let previousCard: string = cards[cards.length - 2].code.charAt(0)
 			//Check if cards are the same number when snapped
-			if(currentCard === previousCard) {
-				//Set winner to current player and alert winner
-				winner = currentPlayer
-				alert(currentPlayer + " you fucking won!")
+			if(currentCard === previousCard) { 
+				this.handleSuccess(currentPlayer, nextPlayer, ", you fucking won")
 			} else {
-				//Set winner to the other player, alert the loser and swap turns
-				winner = nextPlayer
-				alert("No snap")
-				//This should potentially be grouped with the deck setting
-				this.setState({
-					players: this.handleTurn(currentPlayer)
-				})
+				this.handleFailure(nextPlayer, currentPlayer, "No snap!")
 			}
-			this.resetGame(winner)
+		} else if(isReady && success && cards.length === 52) { 
+			alert("You won all of it!")
+			this.initialiseDeck()
 		} else {
 			alert("You can't snap yet")
 		}
@@ -204,10 +200,9 @@ export default class Game extends React.Component<Props, State> {
 		let isReady: boolean = this.state.isReady
 		if(isReady) {
 			let playerPile: pileType = this.state.deck.piles[player]
-			//Filter out to only show the last two items
-			//Map the data to a card component
 			let playerCards: ReactNode = playerPile.cards
-				.filter(c => playerPile.cards.indexOf(c) == playerPile.cards.length -1)
+				//Filter out to only show the last item
+				.filter(c => playerPile.cards.indexOf(c) == playerPile.cards.length - 1)
 				.map(c => <Card key={c.code.toString()} image={c.image} value={c.value} suit={c.suit} code={c.code}/>)
 			return playerCards
 		}
@@ -219,7 +214,6 @@ export default class Game extends React.Component<Props, State> {
 			let players: playerType[] = this.state.players
 			let deck: deckType = this.state.deck
 			//Filter out players that aren't read only
-			//Map players and get cards for that player
 			let hand: ReactNode = players
 				.filter(i => i.readOnly === typeOfPlayer)
 				.map(i => 
@@ -230,9 +224,8 @@ export default class Game extends React.Component<Props, State> {
 						turn={i.turn}
 						theme={i.theme} 
 						playCard={() => { this.play(deck, i.name, players[0].name, 1) }}
-						snap={() => { this.snap(i.name) }}
-					>
-						{ (this.showCards(i.name) !== undefined) ? this.showCards(i.name) : <h3>No card</h3>  }
+						snap={() => { this.snap(i.name) }} >
+						{ this.showCards(i.name) }
 					</Player>
 				)
 			return hand
