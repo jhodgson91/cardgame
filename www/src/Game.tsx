@@ -57,13 +57,9 @@ export default class Game extends React.Component<GameProps, GameState> {
     async componentDidMount() {
         let op = this.props.id != NEW_GAME_ID
             ? axios.get(`${BASE_URL}/${this.props.id}`)
-            : axios.post(`${BASE_URL}/${NEW_GAME_ID}`);
+            : axios.post(`${BASE_URL}/${NEW_GAME_ID}`, this.props.piles);
 
         this.refresh(await op);
-
-        for (var key in this.props.piles) {
-            await this.draw(DECK_ID, key, this.props.piles[key]);
-        }
     }
 
     // Draw cards from->to using selection
@@ -94,7 +90,7 @@ export default class Game extends React.Component<GameProps, GameState> {
     render(): React.ReactNode {
         return (
             <div>
-                Hello! My id is  {this.id}
+                Hello! My id is {this.id}
                 <div>I have these piles:</div>
                 <ul>
                     {
@@ -103,7 +99,7 @@ export default class Game extends React.Component<GameProps, GameState> {
                                 <ul>
                                     {
                                         this.piles[key].map((card: Card) => {
-                                            return <li key={card.code}>{card.code}</li>
+                                            return <li key={card.code}>{card.jsx()}</li>
                                         })
                                     }
                                 </ul>

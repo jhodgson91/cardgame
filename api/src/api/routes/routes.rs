@@ -1,5 +1,7 @@
 use super::*;
 
+use rocket_contrib::json::Json;
+
 use rocket::response::NamedFile;
 use rocket_contrib::json::JsonValue;
 
@@ -13,9 +15,14 @@ pub fn file_serve(filename: String) -> std::io::Result<NamedFile> {
     NamedFile::open(filename)
 }
 
-#[post("/game/new")]
-pub fn new_game(conn: GamesDbConn) -> Result<JsonValue, CardAPIError> {
-    let game = Game::new();
+#[post("/game/new", data = "<initData>")]
+pub fn new_game(conn: GamesDbConn, initData: Option<Json<InitData>>) -> Result<JsonValue, CardAPIError> {
+    let mut game = Game::new();
+    if let Some(data) = initData {
+        for (key, value) in &*data {
+            game.draw(&"deck".to_string(), &key, &value)?;
+        }
+    }
     game.save(&conn)?;
     Ok(game.into())
 }
@@ -32,8 +39,6 @@ pub fn get_pile(conn: GamesDbConn, id: String, name: String) -> Result<JsonValue
     let pile = game.get_pile(&name);
     Ok(json!({ name: pile }))
 }
-
-use rocket_contrib::json::Json;
 
 #[put("/game/<id>/<name>", data = "<drawdata>")]
 pub fn draw_into_pile(
