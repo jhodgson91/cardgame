@@ -1,7 +1,11 @@
 import * as React from 'react';
 
 import axios, { AxiosResponse } from 'axios';
-import { CardValue, MoveRequest, GameResponse, CardCode, CardSuit, CardSelection, BASE_URL, NEW_GAME_ID, DECK_ID, INVALID_GAME_ID } from './api';
+import {
+    CardValue, MoveRequest, GameResponse,
+    CardCode, CardSuit, CardSelection,
+    BASE_URL, NEW_GAME_ID, INVALID_GAME_ID
+} from './api';
 
 
 export class Card {
@@ -109,10 +113,6 @@ export default class Game extends React.Component<GameProps, GameState> {
                 </ul>
             </div>
         )
-    }
-
-    pile(name: string): Card[] {
-        return this.state.piles[name]
     }
 
     get id(): string { return this.state.id; }
