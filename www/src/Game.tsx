@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import axios, { AxiosResponse } from 'axios';
-import { CardValue, MoveRequest, GameResponse, CardCode, CardSuit, CardSelection, BASE_URL, NEW_GAME_ID, DECK_ID } from './api';
+import { CardValue, MoveRequest, GameResponse, CardCode, CardSuit, CardSelection, BASE_URL, NEW_GAME_ID, DECK_ID, INVALID_GAME_ID } from './api';
 
 
 export class Card {
@@ -38,8 +38,7 @@ export interface GameProps {
 
 export interface GameState {
     id: string,
-    piles: Piles,
-    ready: boolean
+    piles: Piles
 }
 
 export default class Game extends React.Component<GameProps, GameState> {
@@ -49,32 +48,22 @@ export default class Game extends React.Component<GameProps, GameState> {
     }
 
     state: GameState = {
-        id: this.props.id,
-        piles: {},
-        ready: false,
+        id: INVALID_GAME_ID,
+        piles: {}
     }
 
-    constructor(props: GameProps) {
-        super(props);
-        this.state = {
-            id: props.id,
-            piles: {},
-            ready: false
-        }
-    }
-
-    // Runs a simple get on the game and updates the state
-    // Game ID is defaulted to "new", so right now this will get a new game every time
+    // Props defaults to NEW_GAME_ID - in which case we POST
+    // Otherwise, do a GET on the requested ID
     async componentDidMount() {
-        this.refresh(await axios.post(this.url));
+        let op = this.props.id != NEW_GAME_ID
+            ? axios.get(`${BASE_URL}/${this.props.id}`)
+            : axios.post(`${BASE_URL}/${NEW_GAME_ID}`);
+
+        this.refresh(await op);
 
         for (var key in this.props.piles) {
             await this.draw(DECK_ID, key, this.props.piles[key]);
         }
-
-        this.setState({
-            ready: true
-        })
     }
 
     // Draw cards from->to using selection
@@ -90,7 +79,6 @@ export default class Game extends React.Component<GameProps, GameState> {
     // Updates state with data from a GameResponse
     refresh(response: AxiosResponse<GameResponse>) {
         let { id, piles } = response.data;
-        console.log("Got an ID: " + id);
 
         let newPiles: Piles = {};
         Object.keys(piles).forEach(key => {
@@ -106,7 +94,7 @@ export default class Game extends React.Component<GameProps, GameState> {
     render(): React.ReactNode {
         return (
             <div>
-                Hello! My id is {this.isReady ? this.id : "???"}
+                Hello! My id is  {this.id}
                 <div>I have these piles:</div>
                 <ul>
                     {
@@ -132,7 +120,7 @@ export default class Game extends React.Component<GameProps, GameState> {
     }
 
     get id(): string { return this.state.id; }
-    get isReady(): boolean { return this.state.id != NEW_GAME_ID }
+    get isReady(): boolean { return this.state.id != INVALID_GAME_ID }
     get piles(): Piles { return this.state.piles; }
     get url(): string { return BASE_URL + `/${this.state.id}`; }
 }

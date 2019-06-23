@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import Deck from "./Objects/Deck";
 
-
+export const INVALID_GAME_ID: string = "INVALID";
 export const NEW_GAME_ID: string = "new";
 export const DECK_ID: string = "deck";
 
