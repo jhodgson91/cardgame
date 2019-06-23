@@ -1,15 +1,12 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import Game from './Components/Game'
 
-import * as api from './api';
+import Game from './Game'
+import { CardSelection } from './api';
 
-async function newapi_test() {
-    let g = await api.Game.new();
-    console.log(g);
-    await g.draw("deck", "test", { random: 10 });
-    console.log(g);
+const snapPiles: { [name: string]: CardSelection } = {
+    "p1": { random: 26 },
+    "p2": { random: 26 }
 }
 
-newapi_test();
-ReactDOM.render(<Game />, document.getElementById('game'));
+ReactDOM.render(<Game piles={snapPiles} />, document.getElementById('game'));

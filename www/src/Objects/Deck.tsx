@@ -42,7 +42,7 @@ class Deck {
     async drawCards(num: number = 1) {
         return axios.get(`${this.url}/draw/?count=${num}`)
             .then(response => {
-                if(response.data.success) { 
+                if (response.data.success) {
                     return response.data.cards;
                 } else {
                     return response.data;
@@ -103,7 +103,7 @@ class Deck {
     }
     // Base URL for this deck
     get url() {
-        return `${api.url}/deck/${this.id}/`;
+        return `${api.BASE_URL}/deck/${this.id}/`;
     }
 }
 

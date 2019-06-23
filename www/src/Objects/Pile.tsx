@@ -79,7 +79,7 @@ class Pile {
 
     //Get base url for pile actions 
     get url() {
-        return `${api.url}/deck/${this.deck_id}/pile/${this.name}`
+        return `${api.BASE_URL}/deck/${this.deck_id}/pile/${this.name}`
     }
 }
 
