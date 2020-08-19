@@ -8,18 +8,22 @@ exports[`renders the same as last time 1`] = `
     className="grid-container"
   >
     <div
-      className="grid-x grid-padding-x align-center"
+      className="small-12"
     >
+      <h2>
+        house
+      </h2>
       <div
-        className="cell small-12"
+        className="grid-container"
       >
-        <h2>
-          house
-        </h2>
         <div
-          id="test"
+          className="grid-x grid-padding-x align-center"
         >
-          Text
+          <div
+            id="test"
+          >
+            Text
+          </div>
         </div>
       </div>
     </div>

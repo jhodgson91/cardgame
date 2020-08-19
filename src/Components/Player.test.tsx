@@ -1,25 +1,24 @@
-import * as React from 'react';
-import * as enzyme from 'enzyme';
-import Link from '../Link.react';
-import renderer from 'react-test-renderer';
-import Player from './Player';
+import * as React from 'react'
+import * as enzyme from 'enzyme'
+import renderer from 'react-test-renderer'
+import Player from './Player'
 
 //Mock the button clicking
 const mockCallBack = jest.fn();
 
 const playerButton: any = enzyme.shallow(
-    <Player title="house" readOnly={false} theme="house" playCard={ mockCallBack }>
-        <div id="test">Text</div>
+    <Player key={0} title="house" readOnly={false} theme="house" turn={true} playCard={ mockCallBack }>
+        <div key={0} id="test">Text</div>
     </Player>
 )
 
 const playerNoButton: any = enzyme.shallow(
-    <Player title="house" readOnly={true} title="house" playCard={ mockCallBack }>
-        <div id="test">Text</div>
+    <Player key={1} title="house" readOnly={true} title="house" playCard={ mockCallBack }>
+        <div key={0} id="test">Text</div>
     </Player>
 )
 const playerNoChild: any = enzyme.shallow(
-    <Player title="house" readOnly={true} theme="house"/>
+    <Player key={2} title="house" readOnly={true} theme="house"/>
 )
 
 it('renders the same as last time with a button', () => { 
@@ -41,9 +40,9 @@ it('renders with a button', () => {
   const player = playerButton;
   expect(player.find('#house')).toBeDefined;
   expect(player.find('h3').text()).toBe('house');
-  expect(player.find('button').text()).toBe('Play card');
+  expect(player.find('.snap').text()).toBe('Snap');
   expect(player.find('#test').text()).toBe('Text');
-  player.find('button').simulate('click');
+  player.find('.play').simulate('click');
   expect(mockCallBack.mock.calls.length).toEqual(1);
 });
 

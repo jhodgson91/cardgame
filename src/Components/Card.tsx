@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { FC } from 'react'
 import './Main.scss'
 
 //Define props types
@@ -9,17 +9,12 @@ export interface Props {
     code: string;
 }
 
-export default class Card extends React.Component<Props> {
-  
-    constructor(props: Props) {
-        super(props);
-    }
-
-    render(): React.ReactNode {
-        return (
-            <div className="card small-4">
-                <img className="card-img" src={this.props.image}/>
-            </div>
-        );
-    }
+const Card: FC<Props> = ({ image, value, suit, code }) => {
+    return (
+        <div className="card small-4">
+            <img className="card-img" src={image}/>
+        </div>
+    )
 }
+
+export default Card

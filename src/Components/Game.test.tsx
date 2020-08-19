@@ -1,16 +1,14 @@
-import * as React from 'react';
-import * as enzyme from 'enzyme';
-import Link from '../Link.react';
-import renderer from 'react-test-renderer';
-import * as api from '../api';
-import Game from './Game';
+import * as React from 'react'
+import * as enzyme from 'enzyme'
+import renderer from 'react-test-renderer'
+import Game from './Game'
 
 //TODO: Swap mount for mocked APIs and test state updates correctly
 
 const testPlayers: Array<any> = [
-    { id: 0, name: 'house', readOnly: true, theme: "house" },
-    { id: 1, name: 'p1', readOnly: false, theme: "p1" },
-    { id: 2, name: 'p2', readOnly: false, theme: "p2" }
+    { id: 0, name: 'house', readOnly: true, theme: "house", turn: false },
+    { id: 1, name: 'p1', readOnly: false, theme: "p1", turn: false },
+    { id: 2, name: 'p2', readOnly: false, theme: "p2", turn: false }
 ]
 
 it('renders the same as last time', () => {

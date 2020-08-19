@@ -2,7 +2,7 @@
 
 exports[`renders the same as last time with a button 1`] = `
 <div
-  className="grid-x grid-margin-x"
+  className="small-5 player"
   id="house"
 >
   <div
@@ -16,14 +16,19 @@ exports[`renders the same as last time with a button 1`] = `
     className="small-2"
   >
     <button
-      className="button"
+      className="button play"
       onClick={[MockFunction]}
     >
       Play card
     </button>
+    <button
+      className="button snap"
+    >
+      Snap
+    </button>
   </div>
   <div
-    className="cell player house"
+    className="cell player-cards house"
   >
     <div
       className="grid-container"
@@ -44,7 +49,7 @@ exports[`renders the same as last time with a button 1`] = `
 
 exports[`renders the same as last time without a button 1`] = `
 <div
-  className="grid-x grid-margin-x"
+  className="small-5 player"
   id="house"
 >
   <div
@@ -55,7 +60,7 @@ exports[`renders the same as last time without a button 1`] = `
     </h3>
   </div>
   <div
-    className="cell player undefined"
+    className="cell player-cards undefined"
   >
     <div
       className="grid-container"
