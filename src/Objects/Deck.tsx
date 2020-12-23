@@ -1,110 +1,65 @@
 import axios from 'axios'
-import Pile from './Pile'
-import * as api from '../api'
+import * as pileService from './Pile'
+import { url } from '../Utils/consts'
+import { ICard, IDeck, IPile } from '../Utils/types'
 
-interface Card {
-    image: string,
-    value: string,
-    suit: string,
-    code: string
+const create = async (): Promise<IDeck> => {
+    const response = await axios.get(`${url}/new`)
+    
+    return {...response.data, piles: {}}
 }
 
-type DeckData = {
-    success: boolean,
-    deck_id: string,
-    shuffled: boolean,
-    remaining: number,
-    piles: {
-        [name: string]: Pile
-    }
+const drawCards = async (deck: IDeck, num = 1): Promise<ICard[]> => {
+    const response = await axios.get(`${url}/${deck.deck_id}/draw/?count=${num}`) 
+    return response.data.cards
 }
 
-class Deck {
-    data: DeckData = {
-        success: false,
-        deck_id: "",
-        shuffled: false,
-        remaining: 0,
-        piles: {}
-    }
+const getDeck = async (deck_id: IDeck['deck_id']): Promise<IDeck> => {
+    const response = await axios.get(`${url}/${deck_id}`)
+    
+    return response.data
+}
 
-    constructor(data: DeckData | undefined = undefined) {
-        if (data !== undefined) {
-            this.data = data as DeckData
-            if (this.data.piles === undefined) {
-                this.data.piles = {}
-            }
+const shuffleDeck = async (deck: IDeck): Promise<IDeck> => {
+    try {
+        const response = await axios.get(`${url}/${deck.deck_id}/shuffle/`)
+        if (response.data && response.data.success) {
+            return { ...deck, shuffled: response.data.shuffled }
+        } else {
+            return deck
         }
-    }
-
-    // Draws num number of cards from this deck
-    // Returns an array of Card objects
-    async drawCards(num: number = 1) {
-        return axios.get(`${this.url}/draw/?count=${num}`)
-            .then(response => {
-                if(response.data.success) { 
-                    return response.data.cards;
-                } else {
-                    return response.data;
-                }
-            })
-            .catch(error => {
-                console.log(error.response);
-                return error;
-            });
-    }
-
-    // Shuffles this deck
-    async shuffle() {
-        return axios.get(`${this.url}/shuffle/`).then(response => {
-            this.data.shuffled = response.data.shuffled
-        });
-    }
-
-    // Creates a new pile with an optional array of drawn cards
-    async newPile(name: string, cards: Card[] = []) {
-        return axios.get(`${this.url}/pile/${name}/add/?cards=${cards.map((card) => card.code).toString()}`)
-            .then(response => {
-                if (response.data.success) {
-                    let pile = new Pile(this.id, name, cards)
-                    this.data.piles[name] = pile
-                    return pile
-                }
-            });
-    }
-
-    // Draws num number of cards from this deck and puts them in pile name
-    async drawIntoPile(name: string, num: number = 1) {
-        let cards = await this.drawCards(num)
-        if (cards instanceof Array) {
-            if (this.piles[name] != undefined) {
-                await this.piles[name].add(cards)
-                return this.piles[name]
-            }
-            else {
-                let pile = await this.newPile(name, cards)
-                return pile;
-            }
-        }
-    }
-
-    // getters
-    get id() {
-        return this.data.deck_id;
-    }
-    get shuffled() {
-        return this.data.shuffled;
-    }
-    get remaining() {
-        return this.data.remaining;
-    }
-    get piles() {
-        return this.data.piles;
-    }
-    // Base URL for this deck
-    get url() {
-        return `${api.url}/deck/${this.id}/`;
+    } catch (error) {
+        console.log(error)
+        return deck
     }
 }
 
-export default Deck;
+const newPile = async (deck: IDeck, name: IPile['name'], cards: ICard[] = []): Promise<IDeck> => {
+    await axios.get(`${url}/${deck.deck_id}/pile/${name}/add/?cards=${String(cards.map((card) => card.code))}`)
+    const newPile = pileService.create(deck.deck_id, name, cards)
+    return {...deck, piles: { ...deck.piles, [name]: newPile }}
+}
+
+const drawIntoPile = async (deck: IDeck, name: IPile['name'], num = 1): Promise<IDeck> => {
+    const cards = await drawCards(deck, num)
+    if (cards instanceof Array) {
+        if (!deck.piles[name]) {
+            deck = await newPile(deck, name, cards)
+            return deck
+        }
+
+        const updatedPile = await pileService.add(deck.deck_id, deck.piles[name], cards)
+        return { ...deck, piles: { ...deck.piles, [name]: updatedPile }}
+    }
+
+    return deck
+}
+
+export { 
+    create, 
+    drawCards, 
+    drawIntoPile, 
+    getDeck,
+    newPile, 
+    shuffleDeck 
+}

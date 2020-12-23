@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
+import React, { FC } from 'react'
 import './Main.scss'
 
-//Define props types
 export interface Props {
     image: string;
     value: string;
@@ -9,22 +8,11 @@ export interface Props {
     code: string;
 }
 
-export default class Card extends React.Component<Props> {
-  
-    constructor(props: Props) {
-        super(props);
-    }
+const Card: FC<Props> = ({ image, value, suit, code }: Props) => (
+    <div className="card small-4">
+        <img alt={code} className="card-img" src={image} />
+        <p>{`${value} OF ${suit}`}</p>
+    </div>
+)
 
-    cardName() {
-        return `${this.props.value} OF ${this.props.suit}`
-    }
-
-    render(): React.ReactNode {
-        return (
-            <div className="card small-4">
-                <img className="card-img" src={this.props.image}/>
-                <p>{this.cardName()}</p>
-            </div>
-        );
-    }
-}
+export default Card

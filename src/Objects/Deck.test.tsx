@@ -1,8 +1,7 @@
-import * as api from '../api';
-import Deck from './Deck';
-import mockDeck from './Deck';
+import * as deckService from './Deck'
+import { IDeck } from '../Utils/types'
 
-var deck: Deck | undefined;
+let deck: IDeck
 
 //TODO: Finish off deck mocks and swap all API calls
 
@@ -14,43 +13,29 @@ var deck: Deck | undefined;
 //});
 
 beforeAll(async () => {
-    deck = await api.getDeck({ shuffled: false });
-    expect(deck).toBeDefined();
+    deck = await deckService.create()
+    expect(deck).toBeDefined()
 })
 
 it('should Get an existing deck', async () => {
-    if (deck) {
-        let deckCopy = await api.getDeck({ deck_id: deck.id });
-        expect(deckCopy).toBeDefined();
-    }
+    const deckCopy = await deckService.getDeck(deck.deck_id)
+    expect(deckCopy).toBeDefined()
 });
 
 it('should Draw 10 cards from a Deck', async () => {
-    if (deck) {
-        let cards = await deck.drawCards(10);
-        expect(cards).toHaveLength(10);
-    }
+    const numberOfCards = 10
+    const cards = await deckService.drawCards(deck, numberOfCards)
+    expect(cards).toHaveLength(numberOfCards)
 });
 
 it('should error if too many cards are drawn', async () => {
-    if(deck) {
-        //Currently using the same deck as the test above so needs 42 cards to max out the deck
-        let drawTooMany = await deck.drawCards(42);
-        expect(drawTooMany).toHaveLength(42);
-        if(drawTooMany != undefined) {
-            let error = await deck.drawCards(1);  // Always make the API call 
-            expect(error).toBeDefined();          // Expect that the call itself was a success
-            if (error) { // I don't know if the expect will bomb out if error wasn't defined, if it does this if can go away
-                expect(error.success).toBe(false);    // Expect that the call returned success==false
-            }
-        }
-    }
+    const lotsOfCards = 42
+    const oneTooManyCards = 1
+    //Currently using the same deck as the test above so needs 42 cards to max out the deck
+    const drawTooMany = await deckService.drawCards(deck, lotsOfCards)
+    expect(drawTooMany).toHaveLength(lotsOfCards)
+    const error = await deckService.drawCards(deck, oneTooManyCards) // Always make the API call 
+    expect(error).toBeDefined() // Expect that the call itself was a success
+    // I don't know if the expect will bomb out if error wasn't defined, if it does this if can go away
+    expect(error).toBe(false)    // Expect that the call returned success==false
 })
-
-it('should Shuffle a deck', async () => {
-    if (deck) {
-        expect(deck.shuffled).toBeFalsy();
-        await deck.shuffle();
-        expect(deck.shuffled).toBeTruthy();
-    }
-});
