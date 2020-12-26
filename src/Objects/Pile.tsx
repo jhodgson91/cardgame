@@ -2,42 +2,92 @@ import axios from 'axios';
 import { url } from '../Utils/consts';
 import { ICard, IDeck, IPile } from '../Utils/types'
 
-const add = async (deck_id: IDeck['deck_id'], pile: IPile, newCards: ICard[] = []): Promise<IPile> => {
-    const { data } = await axios.get(`${url}/${deck_id}/pile/${pile.name}/add/?cards=${String(newCards.map((card) => card.code))}/`)
+const add = async (deck: IDeck, name: IPile['name'], newCards: ICard[] = []): Promise<IDeck> => {
+    const cards = String(newCards.map(({code}) => code)) 
+    const pile = deck.piles[name]
+    const {deck_id, piles} = deck
+    
+    const { data } = await axios.get(`${url}/${deck_id}/pile/${name}/add/?cards=${cards}/`)
     
     if (!data.success) {
         console.log('pile add fail')
-        return pile
+        return deck
     }
 
-    return { ...pile, cards: [...pile.cards, ...newCards] }
+    return { 
+        ...deck, 
+        piles: {
+            ...piles,
+            [name]: {...pile, cards: [...pile.cards, ...newCards]}
+        }
+         
+    }
 } 
 
-const create = (deck_id: IPile['deck_id'], name: IPile['name'], cards: IPile['cards']): IPile => {
+const create = (deck: IDeck, name: IPile['name'], cards: ICard[]): IDeck => {
+    const {deck_id, piles} = deck
+
     return {
-        deck_id,
-        name,
-        cards
+        ...deck,
+        piles: {
+            ...piles,
+            [name]: { deck_id, name, cards}
+        }
     }
 }
 
-const drawCards = async (deck_id: IDeck['deck_id'], num = 1, pile: IPile): Promise<IPile> => {
-    const { data } = await axios.get(`${url}/${deck_id}/pile/${pile.name}/draw/?count=${num}`)
+const drawCards = async (deck: IDeck, name: IPile['name'], noOfCards = 1): Promise<IDeck> => {
+    const pile = deck.piles[name]
+    const { deck_id, piles } = deck
+    
+    const { data } = await axios.get(`${url}/${deck_id}/pile/${name}/draw/?count=${noOfCards}`)
+    
     const drawnCards = data.cards.map((card: ICard) => card.code)
-    const cards = pile.cards.filter(card => !drawnCards.includes(card.code))
-    return { ...pile, cards }
+    const cards = pile.cards.filter(({code}) => !drawnCards.includes(code))
+    
+    return { 
+        ...deck,
+        piles: {
+            ...piles,
+            [name]: {...pile, cards}
+        } 
+    }
 }
 
-const drawCardFrom = async (deck_id: IDeck['deck_id'], pile: IPile, from: 'top' | 'bottom' = 'bottom'): Promise<IPile> => {
-    const { data } = await axios.get(`${url}/${deck_id}/pile/${pile.name}/draw/${from}/`)
+const drawCardFrom = async (deck: IDeck, name: IPile['name'], from: 'top' | 'bottom' = 'bottom'): Promise<IDeck> => {
+    const pile = deck.piles[name]
+    const {deck_id, piles} = deck
+
+    const { data } = await axios.get(`${url}/${deck_id}/pile/${name}/draw/${from}/`)
+    
     const drawnCards = data.cards.map((card: ICard) => card.code)
-    const cards = pile.cards.filter(card => !drawnCards.includes(card.code))
-    return { ...pile, cards }
+    const cards = pile.cards.filter(({ code }) => !drawnCards.includes(code))
+    
+    const updatedDeck = { 
+        ...deck,
+        piles: {
+            ...piles,
+            [name]: {...pile, cards}
+        } 
+    }
+    
+    return updatedDeck
 }
 
-const list = async (deck_id: IDeck['deck_id'], pile: IPile): Promise<IPile> => {
-    const { data } = await axios.get(`${url}/${deck_id}/pile/${pile.name}/list/`)
-    return {...pile, cards: data.pile[pile.name].cards}
+const list = async (deck: IDeck, name: IPile['name']): Promise<IDeck> => {
+    const pile = deck.piles[name]
+    const {deck_id, piles} = deck
+    
+    const { data } = await axios.get(`${url}/${deck_id}/pile/${name}/list/`)
+    const { cards } = data.pile[name]
+    
+    return {
+        ...deck, 
+        piles: {
+            ...piles,
+            [name]: {...pile, cards}
+        }
+    }
 }
 
 export { add, create, drawCards, drawCardFrom, list }

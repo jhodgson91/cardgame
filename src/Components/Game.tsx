@@ -6,7 +6,7 @@ import PlayerWrapper from '../Components/PlayerWrapper'
 import './Main.scss'
 import * as deckService from '../Objects/Deck'
 import * as pileService from '../Objects/Pile'
-import { ICard, IDeck } from '../Utils/types'
+import { IDeck, IPile } from '../Utils/types'
 
 interface playerName {
     name: string,
@@ -23,19 +23,13 @@ const Game: FC = () => {
         { name: 'p2', readOnly: false }
     ])
 
-    const playCard = async (player: string, card: ICard): Promise<void> => {
+    const playCard = async (name: IPile['name']): Promise<void> => {
         if (ready && deck) {
             const main = players[0].name;
-            const playerPile = await pileService.drawCardFrom(deck.deck_id, deck.piles[player]);
-            const deckPile = await pileService.add(deck.deck_id, deck.piles[main], [card]);
-            setDeck({
-                ...deck, 
-                piles: {
-                    ...deck.piles,
-                    [player]: playerPile,
-                    [main]: deckPile
-                },
-            })
+            const drawnDeck = await pileService.drawCardFrom(deck, name)
+            const card = deck.piles[name].cards[0]
+            const addedDeck = await pileService.add(drawnDeck, main, [card]);
+            setDeck(addedDeck)
         } else {
             console.log('Play card error')
         }
@@ -57,7 +51,7 @@ const Game: FC = () => {
         initGame()
     }, [cardInit, players])
 
-    if (!ready || !deck) {
+    if (!ready || !deck || !players) {
         return <Hero title="Loading" />
     }
 
@@ -70,16 +64,10 @@ const Game: FC = () => {
                         title={name} 
                         key={String(name)} 
                         readOnly={readOnly} 
-                        playCard={() => playCard(name, deck.piles[name].cards[0])}
+                        playCard={() => playCard(name)}
                     >
-                        {deck && deck.piles[name].cards.map(({ code, image, suit, value }) =>
-                            <Card 
-                                key={String(code)}
-                                image={image} 
-                                value={value} 
-                                suit={suit} 
-                                code={code} 
-                            />
+                        {deck.piles[name].cards.map(card =>
+                            <Card key={String(card.code)} card={card} />
                         )}
                     </Player>
                 )}
