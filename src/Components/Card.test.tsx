@@ -1,8 +1,7 @@
-import * as React from 'react';
-import * as enzyme from 'enzyme';
-import Link from '../Link.react';
-import renderer from 'react-test-renderer';
-import Card from './Card';
+import React from 'react'
+import * as enzyme from 'enzyme'
+import renderer from 'react-test-renderer'
+import Card from './Card'
 
 //Intialise the thing you're going to test
 type CardData = {
@@ -12,14 +11,14 @@ type CardData = {
     code: string
 };
 
-var c: CardData = {
+const c: CardData = {
     image: 'https://deckofcardsapi.com/static/img/KH.png',
     value: 'KING',
     suit: 'HEARTS',
     code: 'KH'
 }
 
-var cArray: CardData[] = [
+const cArray: CardData[] = [
     {
         image: 'https://deckofcardsapi.com/static/img/KH.png',
         value: 'KING',
@@ -37,25 +36,25 @@ var cArray: CardData[] = [
 it('renders the same as last time', () => {
   const tree = renderer
     .create(<Card key={c.code} image={c.image} value={c.value} suit={c.suit} code={c.code}/>)
-    .toJSON();
-  expect(tree).toMatchSnapshot();
-});
+    .toJSON()
+  expect(tree).toMatchSnapshot()
+})
 
 it('renders with an image, a key and text', () => {
     const card = enzyme.shallow(
       <Card key={c.code} image={c.image} value={c.value} suit={c.suit} code={c.code}/>
-    );
+    )
     expect(card).toBeDefined();
-    expect(card.find('img').prop('src')).toBe('https://deckofcardsapi.com/static/img/KH.png');
-    expect(card.find('p').text()).toBe('KING OF HEARTS');
-});
+    expect(card.find('img').prop('src')).toBe('https://deckofcardsapi.com/static/img/KH.png')
+    expect(card.find('p').text()).toBe('KING OF HEARTS')
+})
 
 it('renders several cards with an array', () => {
     const cards = enzyme.shallow(
       <div>
         {cArray.map(card => <Card key={card.code} image={card.image} value={card.value} suit={card.suit} code={card.code}/>)}
       </div>
-    ).find("Card");
-    expect(cards.at(0).key()).toBe("KH");
-    expect(cards.at(1).key()).toBe("AS");
-});
+    ).find("Card")
+    expect(cards.at(0).key()).toBe("KH")
+    expect(cards.at(1).key()).toBe("AS")
+})
